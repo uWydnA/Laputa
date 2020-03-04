@@ -2,7 +2,7 @@
   <div class="swiper-container" v-if="swiperlist" :class="swiperClass">
     <div class="swiper-wrapper">
       <div class="swiper-slide" v-for="(data,index) in swiperlist" :key="index">
-        <div :style="background-image url(data);"></div>
+        <!-- <div :style="background-image url(data);"></div> -->
       </div>
     </div>
     <div class="swiper-pagination"></div>
