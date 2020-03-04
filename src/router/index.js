@@ -3,8 +3,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     component: () => import('@/views/Index')
   },
@@ -13,15 +12,36 @@ const routes = [
     component: () => import('@/views/Explore')
   },
   {
-    path: '/photographers/recommended',
-    component: () => import('@/views/Photographers')
+    path: '/photographers',
+    component: () => import('@/views/Photographers'),
+    children: [{
+        path: '/photographers/recommended',
+        component: () => import('@/views/Photographers/Recommended')
+      },
+      {
+        path: '/photographers/hot',
+        component: () => import('@/views/Photographers/Hot')
+      },
+      {
+        path: '/photographers/new',
+        component: () => import('@/views/Photographers/New')
+      },
+      {
+        path: '/photographers/creator',
+        component: () => import('@/views/Photographers/Creator')
+      },
+      {
+        path: '/photographers',
+        redirect: '/photographers/recommended'
+      }
+    ]
   },
   {
     path: '/notifications/messages',
     component: () => import('@/views/Notifications')
   },
   {
-    path: '/video:id',
+    path: '/video/:id',
     component: () => import('@/views/Video')
   },
   {
@@ -31,10 +51,20 @@ const routes = [
   {
     path: '/signup',
     component: () => import('@/views/Signup')
+  },
+  {
+    path: '/topics/:id',
+    component: () => import('@/views/Topics')
+  },
+  {
+    path: '*',
+    redirect : '/'
   }
 ]
 
 const router = new VueRouter({
+  mode: 'hash',
+  base: process.env.BASE_URL,
   routes
 })
 
