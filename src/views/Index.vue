@@ -9,7 +9,7 @@
       <div class="left">
         <span>热门航拍点</span>
       </div>
-      <a class="right" href="#!">
+      <a class="right" @click="showV">
         <span>热门航拍点集锦</span>
         <van-icon name="play-circle-o" />
       </a>
@@ -19,9 +19,19 @@
       swiperClass="hotslist"
       :key="hotslist.length?hotslist.length:'swiperHot'"
     ></swiperHot>
+    <div class="hotVideo" :style="{bottom:clientH}" v-if="isshowV" @click.stop="cancelV"></div>
+    <transition name="shiii">
+      <div class="box" v-if="isshowV">
+        <video
+          src="https://cn-videos.dji.net/video_trans/519050e3f0c146a6ac6c79989b867f4a/720.mp4"
+          controls="controls"
+          autoplay
+        ></video>
+      </div>
+    </transition>
     <lazy-component>
       <ul class="infoUl">
-        <carbar v-for='data in barlist' :key="data.slug" :cardata="data"></carbar>
+        <carbar v-for="data in barlist" :key="data.slug" :cardata="data"></carbar>
       </ul>
     </lazy-component>
   </div>
@@ -51,7 +61,9 @@ export default {
       barlist: [],
       ulHeight: 5500,
       flag: true,
-      inow : 0
+      inow: 0,
+      clientH: "0px",
+      isshowV: false
     };
   },
   mounted() {
@@ -94,10 +106,8 @@ export default {
         window.onscroll = () => {
           var num = 0;
           if (document.documentElement.scrollTop > this.ulHeight) {
-            num = parseInt(
-              document.documentElement.scrollTop / this.ulHeight
-            );
-            if(num>this.inow){
+            num = parseInt(document.documentElement.scrollTop / this.ulHeight);
+            if (num > this.inow) {
               this.flag = true;
             }
             if (this.flag) {
@@ -115,10 +125,20 @@ export default {
           }
         };
       }
+    },
+    showV() {
+      this.clientH = document.documentElement.clientHeight;
+      document.body.style.height = this.clientH + "px";
+      document.body.style.overflow = "hidden";
+      this.isshowV = true;
+    },
+    cancelV () {
+      document.body.style.overflow = "visible";
+      this.isshowV = false;
     }
   },
-  beforeRouteLeave (to, from, next) {
-    window.onscroll = null
+  beforeRouteLeave(to, from, next) {
+    window.onscroll = null;
     next();
   },
   computed: {
@@ -128,6 +148,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.hotVideo {
+  position: absolute;
+  overflow: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10150;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+  .box {
+    position: fixed;
+    width: 100%;
+    height: 10rem;
+    top: 45%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 999999;
+    video {
+      display: block;
+      width: 90%;
+      margin: 0 auto;
+    }
+  }
 .hot {
   background-color: #fff;
   padding: 1.6rem 0.8rem 1.2rem;
@@ -144,5 +191,16 @@ export default {
     line-height: 1.2rem;
     color: #1890ff;
   }
+}
+.shiii-enter-active,
+.shiii-leave-active {
+  transition: all .5s;
+  opacity: 1;
+  transform: scale(1);
+}
+.shiii-enter,
+.shiii-leave-to {
+  opacity: 0;
+  transform: scale(0);
 }
 </style>
