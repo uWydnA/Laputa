@@ -21,7 +21,7 @@ const routes = [
     component: () => import('@/views/Notifications')
   },
   {
-    path: '/video:id',
+    path: '/video/:id',
     component: () => import('@/views/Video')
   },
   {
@@ -31,10 +31,12 @@ const routes = [
   {
     path: '/signup',
     component: () => import('@/views/Signup')
-  }
+  },
 ]
 
 const router = new VueRouter({
+  mode: 'hash',
+  base: process.env.BASE_URL,
   routes
 })
 

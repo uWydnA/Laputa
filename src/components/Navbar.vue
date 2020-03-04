@@ -61,8 +61,9 @@ export default {
     },
     onClickRight () {},
     handleClick (data) {
-      this.$router.push(data)
       this.listshow = false
+      this.lefticon = this.lefticon === 'clear' ? 'wap-nav' : 'clear'
+      this.$router.push(data);
     },
     checkLogin () {
       if (localStorage.getItem('token')) {
@@ -84,7 +85,9 @@ export default {
     font-size: 1.5rem;
   }
 }
-.dang{height: 46px}
+.dang {
+  height: 46px;
+}
 .logo {
   position: fixed;
   left: 0;
@@ -97,10 +100,10 @@ export default {
 .list {
   position: fixed;
   width: 100%;
-  z-index:1000;
+  z-index: 1000;
   .van-cell {
-    background: #121212;
     color: #fff;
+    background: #121212;
   }
 }
 .fade-enter-active,

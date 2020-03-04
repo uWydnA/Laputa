@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <navbar></navbar>
-    <router-view></router-view>
+    <transition name="fadeshow" mode="out-in" appear>
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
@@ -11,15 +13,32 @@ export default {
   components: {
     navbar
   }
+
 }
 </script>
 <style lang="scss">
-  body{
-        font-family: Open Sans,Helvetica,Arial,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
-    font-style: normal;
-    font-variant: normal;
-    font-weight: 400;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-  }
+html.body {
+  background-color: #f7f8f9;
+}
+body {
+  background-color: #f7f8f9;
+  font-family: Open Sans, Helvetica, Arial, Hiragino Sans GB, Microsoft YaHei,
+    WenQuanYi Micro Hei, sans-serif;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+.fadeshow-enter-active,
+.fadeshow-leave-active {
+  transition: all 0.5s;
+  opacity: 1;
+  transform: translateY(0px);
+}
+.fadeshow-enter,
+.fadeshow-leave-to {
+  opacity: 0;
+  transform: translateY(100px);
+}
 </style>
