@@ -8,13 +8,12 @@
 </template>
 
 <script>
-import navbar from '@/components/Navbar'
+import navbar from "@/components/Navbar";
 export default {
   components: {
     navbar
   }
-
-}
+};
 </script>
 <style lang="scss">
 html.body {
@@ -22,8 +21,7 @@ html.body {
 }
 body {
   background-color: #f7f8f9;
-  font-family: Open Sans, Helvetica, Arial, Hiragino Sans GB, Microsoft YaHei,
-    WenQuanYi Micro Hei, sans-serif;
+  font-family: Microsoft YaHei, WenQuanYi Micro Hei, sans-serif;
   font-style: normal;
   font-variant: normal;
   font-weight: 400;

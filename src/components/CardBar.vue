@@ -14,7 +14,7 @@
     </div>
     <div class="content" @click="setId(cardata.slug)">
       <img :src="cardata.image.small" alt />
-      <div class="duration">
+      <div class="duration" v-if='cardata.duration'>
         <van-icon name="play-circle-o" />
         <span>{{cardata.duration | timeFilter}}</span>
       </div>
@@ -97,6 +97,7 @@ export default {
 img {
   width: 100%;
   height: 100%;
+  display: block;
 }
 * {
   margin: 0;
@@ -186,7 +187,7 @@ li {
       overflow: hidden;
       word-break: break-word;
       word-wrap: break-word;
-      font-size: 1rem;
+      font-size: .9rem;
       font-weight: 500;
       color: #333;
       height: 2rem;
@@ -214,7 +215,7 @@ li {
         }
       }
       .share p {
-        font-size: 0.6rem;
+        font-size: 0.7rem;
       }
     }
   }
