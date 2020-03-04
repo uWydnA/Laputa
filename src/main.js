@@ -4,7 +4,6 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import swiper from 'swiper'
-
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 Vue.prototype.$swiper = swiper
