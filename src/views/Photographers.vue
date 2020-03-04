@@ -30,29 +30,31 @@
               <span>{{data.work_count}}</span>
               <span>作品</span>
             </div>
-            <button>关注</button>
+            <button @click="handleClick()">关注</button>
           </div>
           <div class="_1iEQ">
-            <div class="img" v-for="data in data.works" :key="data.slug">
+            <div class="img" v-for="data in data.works" :key="data.slug" @click="handleClick1(data.slug)">
               <img :src="data.image.small" />
+              <div class="time" v-show="data.duration">{{data.duration | detaFilter}}</div>
+              <div class="time" v-show="data.album_photo_count"><van-icon name="orders-o" />{{data.album_photo_count}}</div>
             </div>
-            <!-- <div class="time"></div> -->
           </div>
         </div>
       </div>
     </div>
-    <van-pagination
-    v-model="currentPage"
-    :page-count="15"
-    mode="simple"
-    @change="handleChange()"
-    />
+    <van-pagination v-model="currentPage" :page-count="15" mode="simple" @change="handleChange()" />
   </div>
 </template>
 <script>
 import Vue from 'vue'
+import moment from 'moment'
 import { Pagination } from 'vant'
 Vue.use(Pagination)
+Vue.filter('detaFilter', data => {
+  if (data) {
+    return moment(data * 1000).format('mm:ss')
+  }
+})
 export default {
   data () {
     return {
@@ -63,8 +65,7 @@ export default {
   },
   mounted () {
     this.$axios({
-      url:
-        `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      url: `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
     }).then(res => {
       console.log(res)
       this.datalist = res.data.data.items
@@ -72,14 +73,23 @@ export default {
   },
   methods: {
     handleChange () {
+      this.datalist = []
       this.page = (this.currentPage - 1) * 20
-      this.$axios({
-        url:
-        `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-      }).then(res => {
-        console.log(res)
-        this.datalist = res.data.data.items
+      this.$nextTick(() => {
+        this.$axios({
+          url: `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+        }).then(res => {
+          console.log(res)
+          this.datalist = res.data.data.items
+        })
       })
+    },
+    handleClick () {
+      // 登录注册 完成后在完善部分功能
+      this.$router.push('/Login')
+    },
+    handleClick1 (id) {
+      this.$router.push(`/Video/${id}`)
     }
   }
 }
@@ -146,7 +156,6 @@ export default {
           border-radius: 50%;
           overflow: hidden;
           float: left;
-          // margin-top: 1rem;
           img {
             width: 2.4rem;
             height: 2.4rem;
@@ -156,15 +165,15 @@ export default {
           font-style: normal;
           margin-left: 0.625rem;
           margin-top: 0.625rem;
-          font-size: 14px;
+          font-size: 0.8rem;
           font-weight: bolder;
         }
         p {
           font-size: 12px;
           margin: 0;
           margin-left: 3rem;
-          margin-top: 0.125rem;
-          font-size: 0.6rem;
+          margin-top: 0.325rem;
+          font-size: 0.7rem;
           line-height: 0.8rem;
           color: rgba(0, 0, 0, 0.45);
         }
@@ -204,9 +213,23 @@ export default {
           margin-left: 0.625rem;
           margin-bottom: 1rem;
           height: 4.5rem;
+          position: relative;
           img {
             width: 100%;
             height: 100%;
+          }
+          .time {
+            position: absolute;
+            top: 5%;
+            right: 4%;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 0.6rem;
+            line-height: 1.2rem;
+                padding: 0 .4rem;
+            font-weight: 600;
+            height: 1.2rem;
+            border-radius: 0.2rem;
           }
         }
       }
