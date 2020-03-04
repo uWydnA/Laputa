@@ -2,7 +2,7 @@
   <div>
     <div class="swiper-container">
       <div class="swiper-wrapper">
-        <div class="swiper-slide" v-for="(data,index) in this.dataList" :key="index">
+        <div class="swiper-slide" v-for="data in this.dataList" :key="data.image.small">
           <img :src="data.image.small" alt />
         </div>
       </div>
