@@ -2,6 +2,7 @@
   <div>
     <van-nav-bar left-arrow @click-left="onClickLeft" @click-right="onClickRight" class="nav">
       <van-icon :name="lefticon" slot="left" color="white" />
+      <van-icon name="setting-o" slot="right" color="white" v-if='isLogined' @click='$router.push("/notifications/messages")' style='margin-right:1rem' />
       <van-icon name="friends" slot="right" color="white" @click="checkLogin" />
     </van-nav-bar>
     <div class="dang"></div>
@@ -52,12 +53,18 @@ export default {
         { url: '/notifications/messages', name: '消息' }
       ],
       listshow: false,
-      lefticon: 'wap-nav'
+      lefticon: 'wap-nav',
+      isLogin: false
+
     }
   },
   computed: {
-    ...mapState('login', ['token'])
+    ...mapState('login', ['token', 'userId']),
+    isLogined () {
+      return !!this.token
+    }
   },
+
   methods: {
     onClickLeft () {
       this.listshow = !this.listshow
@@ -71,7 +78,7 @@ export default {
     },
     checkLogin () {
       if (this.token) {
-        this.$router.push('/notifications/messages')
+        this.$router.push(`/users/${this.userId}`)
       } else {
         this.$router.push('/login')
       }
