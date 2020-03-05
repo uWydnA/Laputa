@@ -17,7 +17,7 @@
     <swiperHot
       :swiperlist="hotslist"
       swiperClass="hotslist"
-      :key="hotslist.length?hotslist.length:'swiperHot'"
+      :key="hotslist.length?hotslist.length+'swiperHot':'swiperHot'"
     ></swiperHot>
 
     <div class="hotVideo" :style="{bottom:clientH}" v-if="isshowV" @click.stop="cancelV"></div>
@@ -46,7 +46,7 @@
         <swiperSmall
           :swiperlist="taglist"
           swiperClass="taglist"
-          :key="taglist.length?taglist.length:'swiperTag'"
+          :key="taglist.length?taglist.length+'swiperTag':'swiperTag'"
         ></swiperSmall>
         <ul>
           <carbar v-for="data in barlist.slice(2,4)" :key="data.slug" :cardata="data"></carbar>
@@ -59,7 +59,7 @@
         <swiperSmall
           :swiperlist="photolist"
           swiperClass="photolist"
-          :key="photolist.length?photolist.length:'swiperPhoto'"
+          :key="photolist.length?photolist.length+'swiperPhoto':'swiperPhoto'"
         ></swiperSmall>
         <ul>
           <carbar v-for="data in barlist.slice(4)" :key="data.slug" :cardata="data"></carbar>
@@ -145,6 +145,16 @@ export default {
     }).then(res => {
       this.photolist = res.data.data.items
     })
+    // this.$axios({
+    //   url:'http://39.99.182.33/api/users/login',
+    //   method :'post',
+    //   data : {
+    //     tel : 'admin',
+    //     password : 'admin'
+    //   }
+    // }).then(res=>{
+    //   console.log(res)
+    // })
     this.scrollGet()
   },
   methods: {
