@@ -39,54 +39,54 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { Tabbar, TabbarItem } from "vant";
+import Vue from 'vue'
+import { Tabbar, TabbarItem } from 'vant'
 // 主分组
-Vue.use(Tabbar);
-Vue.use(TabbarItem);
+Vue.use(Tabbar)
+Vue.use(TabbarItem)
 export default {
-  data() {
+  data () {
     return {
       dataList: [],
       isShow: true,
       isClass: false,
-      name: "",
+      name: '',
       active: 0,
       icon: {
-        active: "https://img.yzcdn.cn/vant/user-active.png",
-        inactive: "https://img.yzcdn.cn/vant/user-inactive.png"
+        active: 'https://img.yzcdn.cn/vant/user-active.png',
+        inactive: 'https://img.yzcdn.cn/vant/user-inactive.png'
       },
       value: 0,
       switch1: false,
       switch2: false,
       option: [
-        { text: "全部", value: 0 },
-        { text: "视频", value: 1 },
-        { text: "图片", value: 2 },
-        { text: "全景360", value: 3 }
+        { text: '全部', value: 0 },
+        { text: '视频', value: 1 },
+        { text: '图片', value: 2 },
+        { text: '全景360', value: 3 }
       ]
-    };
+    }
   },
-  mounted() {
+  mounted () {
     this.$axios
       .get(
         `/api/v2/topics/${this.$route.params.id}/works?lang=zh-Hans&platform=web&device=mobile&sort=hot&filter=featured:true&limit=15&offset=0`
       )
       .then(res => {
-        console.log(res.data.data.items);
-        this.dataList = res.data.data.items;
-      });
+        console.log(res.data.data.items)
+        this.dataList = res.data.data.items
+      })
   },
-  created() {
+  created () {
     this.$axios
       .get(
         `/api/v2/topics/${this.$route.params.id}?lang=zh-Hans&platform=web&device=mobile`
       )
       .then(res => {
-        this.name = res.data.data.item.name;
-      });
+        this.name = res.data.data.item.name
+      })
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
