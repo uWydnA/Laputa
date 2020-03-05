@@ -3,12 +3,12 @@
     <div class="photographer">
       <ul class="photos" v-show="isShow">
         <router-link
-          :to="data.path"
+          :to="{path:data.path, query:{url:data.url}}"
           tag="li"
           activeClass="qiaowanze"
           v-for="(data,index) in navlist"
           :key="data.text"
-          @click.native="handleClick(index)"
+          @click.native="handleClick(index,data)"
         >{{data.text}}</router-link>
       </ul>
       <div class="left">
@@ -27,21 +27,21 @@
             <p>账号类型</p>
             <van-radio-group v-model="radio">
               <van-cell-group>
-                <van-cell title="个人&公司" clickable @click="radio = '1'">
+                <van-cell title="个人&公司" clickable @click="click1()">
                   <van-radio slot="right-icon" name="1" />
                 </van-cell>
-                <van-cell title="个人" clickable @click="radio = '2'">
+                <van-cell title="个人" clickable @click="click2()">
                   <van-radio slot="right-icon" name="2" />
                 </van-cell>
-                <van-cell title="公司" clickable @click="radio = '3'">
+                <van-cell title="公司" clickable @click="click3()">
                   <van-radio slot="right-icon" name="3" />
                 </van-cell>
               </van-cell-group>
             </van-radio-group>
           </div>
           <div class="Btn">
-            <button class="btn" @click="show=!show">重置</button>
-            <button class="btn" @click="show=!show">确定</button>
+            <button class="btn" @click="click()">重置</button>
+            <button class="btn" @click="click()">确定</button>
           </div>
         </van-popup>
       </div>
@@ -73,22 +73,27 @@ export default {
       radio: '1',
       show: false,
       isShow: false,
+      type: 'all',
       navlist: [
         {
           path: '/photographers/recommended',
-          text: '推荐摄影师'
+          text: '推荐摄影师',
+          url: 'recommended'
         },
         {
           path: '/photographers/hot',
-          text: '热门摄影师'
+          text: '热门摄影师',
+          url: 'hot'
         },
         {
           path: '/photographers/new',
-          text: '新晋摄影师'
+          text: '新晋摄影师',
+          url: 'new'
         },
         {
           path: '/photographers/creator',
-          text: '签约摄影师'
+          text: '签约摄影师',
+          url: 'contract'
         }
       ],
       index: 0
@@ -98,9 +103,22 @@ export default {
     showPopup () {
       this.show = true
     },
-    handleClick (index) {
+    handleClick (index, data) {
       this.index = index
       this.isShow = false
+      // console.log(this.url)
+    },
+    click1 () {
+      this.type = 'all'
+    },
+    click2 () {
+      this.type = 'personal'
+    },
+    click3 () {
+      this.type = 'company'
+    },
+    click () {
+      this.show = false
     }
   }
 }
