@@ -14,27 +14,14 @@
     </div>
     <div class="content" @click="setId(cardata.slug)">
       <img :src="cardata.image.small" alt />
-      <div class="duration" v-if='cardata.duration'>
+      <div class="duration" v-if="cardata.duration">
         <van-icon name="play-circle-o" />
         <span>{{cardata.duration | timeFilter}}</span>
       </div>
     </div>
     <div class="bottom">
       <p class="title">{{cardata.title}}</p>
-      <div class="btn">
-        <div class="zan" @click="clickZan">
-          <van-icon :name="goodjob" size="1.3rem" />
-          <p>{{cardata.like_count}}</p>
-        </div>
-        <div class="chat" @click="clickChat">
-          <van-icon name="chat-o" size="1.3rem" />
-          <p>{{cardata.comment_count}}</p>
-        </div>
-        <div class="share">
-          <i class="iconfont icon-icon-test14" style="font-size:1.3rem"></i>
-          <p>分享</p>
-        </div>
-      </div>
+      <btn :cardata="cardata"></btn>
     </div>
   </li>
 </template>
@@ -43,6 +30,7 @@
 import Vue from 'vue'
 import { Button } from 'vant'
 import { mapMutations, mapState } from 'vuex'
+import btn from '@/components/Dianzan'
 Vue.use(Button)
 export default {
   data () {
@@ -78,7 +66,7 @@ export default {
       }
     },
     clickZan () {
-      if (!this.token) {
+      if (this.token) {
         if (this.goodjob === 'good-job-o') {
           this.goodjob = 'good-job'
           this.cardata.like_count++
@@ -93,6 +81,9 @@ export default {
     clickChat () {
       this.setId(this.cardata.slug)
     }
+  },
+  components: {
+    btn
   }
 }
 </script>
@@ -191,36 +182,11 @@ li {
       overflow: hidden;
       word-break: break-word;
       word-wrap: break-word;
-      font-size: .9rem;
+      font-size: 0.9rem;
       font-weight: 500;
       color: #333;
       height: 2rem;
       line-height: 2rem;
-    }
-    .btn {
-      display: flex;
-      font-size: 1rem;
-      color: #838385;
-      .zan,
-      .chat,
-      .share {
-        margin-right: 1rem;
-        color: #838385;
-        padding: 0.2rem 0;
-        height: 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        i {
-          margin-right: 0.3rem;
-        }
-        p {
-          font-size: 0.8rem;
-        }
-      }
-      .share p {
-        font-size: 0.7rem;
-      }
     }
   }
 }

@@ -1,95 +1,106 @@
 <template>
   <div>
     <div class="photographer">
+      <ul class="photos" v-show="isShow">
+        <router-link
+          :to="data.path"
+          tag="li"
+          activeClass="qiaowanze"
+          v-for="(data,index) in navlist"
+          :key="data.text"
+          @click.native="handleClick(index)"
+        >{{data.text}}</router-link>
+      </ul>
       <div class="left">
-        <span>推荐摄影师</span>
+        <span @click="isShow=!isShow">{{navlist[index].text}}</span>
       </div>
       <div class="right">
-        <van-icon name="filter-o" />
-        <span>筛选</span>
+        <van-cell is-link @click="showPopup">
+          <van-icon name="filter-o" />
+          <span>筛选</span>
+        </van-cell>
+        <van-popup v-model="show" position="right" :style="{ height: '100%',width:'86%' }">
+          <p class="RQVe">
+            <span>筛选</span>
+          </p>
+          <div class="select">
+            <p>账号类型</p>
+            <van-radio-group v-model="radio">
+              <van-cell-group>
+                <van-cell title="个人&公司" clickable @click="radio = '1'">
+                  <van-radio slot="right-icon" name="1" />
+                </van-cell>
+                <van-cell title="个人" clickable @click="radio = '2'">
+                  <van-radio slot="right-icon" name="2" />
+                </van-cell>
+                <van-cell title="公司" clickable @click="radio = '3'">
+                  <van-radio slot="right-icon" name="3" />
+                </van-cell>
+              </van-cell-group>
+            </van-radio-group>
+          </div>
+          <div class="Btn">
+            <button class="btn" @click="show=!show">重置</button>
+            <button class="btn" @click="show=!show">确定</button>
+          </div>
+        </van-popup>
       </div>
     </div>
-    <div class="photographers">
-      <div class="_2e8y">
-        <div class="oJjm_3Ucp" v-for="data in datalist" :key="data.slug">
-          <div class="_1tZU">
-            <div class="imgbox">
-              <img :src="data.avatar.small" />
-            </div>
-            <i>{{data.name}}</i>
-            <p>{{data.country_name}}</p>
-            <div class="_22r_" style="margin-left:3rem;">
-              <span>{{data.credit_score}}</span>
-              <span>声望</span>
-            </div>
-            <div class="_22r_">
-              <span>{{data.follower_count}}</span>
-              <span>粉丝</span>
-            </div>
-            <div class="_22r_">
-              <span>{{data.work_count}}</span>
-              <span>作品</span>
-            </div>
-            <button @click="handleClick()">关注</button>
-          </div>
-          <div class="_1iEQ">
-            <div class="img" v-for="data in data.works" :key="data.slug" @click="handleClick1(data.slug)">
-              <img :src="data.image.small" />
-              <div class="time" v-show="data.duration">{{data.duration | detaFilter}}</div>
-              <div class="time" v-show="data.album_photo_count"><van-icon name="orders-o" />{{data.album_photo_count}}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <van-pagination v-model="currentPage" :page-count="15" mode="simple" @change="handleChange()" />
+    <router-view></router-view>
   </div>
 </template>
 <script>
 import Vue from 'vue'
-import moment from 'moment'
-import { Pagination } from 'vant'
+import {
+  Pagination,
+  Popup,
+  RadioGroup,
+  Radio,
+  CellGroup,
+  Cell,
+  Button
+} from 'vant'
 Vue.use(Pagination)
-Vue.filter('detaFilter', data => {
-  if (data) {
-    return moment(data * 1000).format('mm:ss')
-  }
-})
+Vue.use(Popup)
+Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(CellGroup)
+Vue.use(Cell)
+Vue.use(Button)
 export default {
   data () {
     return {
-      datalist: [],
-      currentPage: 1,
-      page: ''
+      radio: '1',
+      show: false,
+      isShow: false,
+      navlist: [
+        {
+          path: '/photographers/recommended',
+          text: '推荐摄影师'
+        },
+        {
+          path: '/photographers/hot',
+          text: '热门摄影师'
+        },
+        {
+          path: '/photographers/new',
+          text: '新晋摄影师'
+        },
+        {
+          path: '/photographers/creator',
+          text: '签约摄影师'
+        }
+      ],
+      index: 0
     }
   },
-  mounted () {
-    this.$axios({
-      url: `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-    }).then(res => {
-      console.log(res)
-      this.datalist = res.data.data.items
-    })
-  },
   methods: {
-    handleChange () {
-      this.datalist = []
-      this.page = (this.currentPage - 1) * 20
-      this.$nextTick(() => {
-        this.$axios({
-          url: `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-        }).then(res => {
-          console.log(res)
-          this.datalist = res.data.data.items
-        })
-      })
+    showPopup () {
+      this.show = true
     },
-    handleClick () {
-      // 登录注册 完成后在完善部分功能
-      this.$router.push('/Login')
-    },
-    handleClick1 (id) {
-      this.$router.push(`/Video/${id}`)
+    handleClick (index) {
+      this.index = index
+      this.isShow = false
     }
   }
 }
@@ -101,13 +112,32 @@ export default {
   background-color: #fff;
   border-bottom: 1px solid #e8e8e8;
   height: 3rem;
+  // position: fixed;
+  // width: 100%;
+  // z-index: 1234;
+  // top: 2.9rem;
+  .photos {
+    width: 100%;
+    position: absolute;
+    background: #fff;
+    z-index: 500;
+    left: 0;
+    // top: 3rem;
+    top: 6rem;
+    li {
+      margin: 0.5rem 0rem 1rem 1.5rem;
+    }
+    .qiaowanze {
+      font-weight: bolder;
+    }
+  }
   .left {
     flex: 0.9;
     height: 3rem;
     line-height: 3rem;
     span {
       padding-left: 1rem;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       line-height: 1.6rem;
       font-weight: 600;
       color: rgba(0, 0, 0, 0.85);
@@ -121,117 +151,69 @@ export default {
     justify-content: center;
     display: flex;
     padding: 0.6rem 0.4rem 0.6rem 0.8rem;
+    .van-cell__right-icon::before {
+      content: "";
+    }
+    .van-cell:not(:last-child)::after {
+      border-bottom: none;
+    }
+    .van-cell--clickable {
+      padding: 0 !important;
+    }
     i {
-      font-size: 16px;
+      font-size: 1rem;
       color: rgba(0, 0, 0, 0.85);
     }
     span {
       font-size: 1rem;
-      line-height: 1.2rem;
+      line-height: 1.25rem;
       color: rgba(0, 0, 0, 0.85);
+      margin-left: 0.2rem;
     }
-  }
-}
-.photographers {
-  margin-bottom: 2.5rem;
-  ._2e8y {
-    width: 100%;
-    margin: 0 auto;
-    .oJjm_3Ucp {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.09);
-      margin: 0.8rem;
-      display: flex;
-      flex-direction: column;
-      box-sizing: border-box;
+    .RQVe {
+      font-size: 0.8rem;
+      line-height: 1.2rem;
+      font-weight: 600;
+      height: 2.4rem;
+      padding-left: 0.8rem;
       align-items: center;
-      ._1tZU,
-      ._1iEQ {
-        width: 100%;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .select {
+      height: 70%;
+      p {
+        font-size: 0.8rem;
+        line-height: 0.8rem;
+        color: #8c8c8c;
+        margin-left: 1rem;
       }
-      ._1tZU {
-        position: relative;
-        .imgbox {
-          width: 2.4rem;
-          height: 2.4rem;
-          border-radius: 50%;
-          overflow: hidden;
-          float: left;
-          img {
-            width: 2.4rem;
-            height: 2.4rem;
-          }
-        }
-        i {
-          font-style: normal;
-          margin-left: 0.625rem;
-          margin-top: 0.625rem;
-          font-size: 1rem;
-          font-weight: bolder;
-        }
-        p {
-          margin: 0;
-          margin-left: 3rem;
-          margin-top: 0.325rem;
-          font-size: 0.7rem;
-          line-height: 0.8rem;
-          color: rgba(0, 0, 0, 0.45);
-        }
-        ._22r_ {
-          display: flex;
-          flex-direction: column;
-          font-size: 0.6rem;
-          line-height: 0.8rem;
-          color: rgba(0, 0, 0, 0.45);
-          float: left;
-          margin-left: 0.625rem;
-          margin-top: 0.625rem;
-          :nth-child(1) {
-            color: rgba(0, 0, 0, 0.85);
-          }
-
-        }
-        button {
-          position: absolute;
-          color: #fff;
-          width: 3.5rem;
-          height: 1.6rem;
-          font-size: 0.6rem;
-          float: right;
-          border-radius: 0.2rem;
+      .van-radio-group {
+        margin-left: 1rem;
+        margin-right: 1rem;
+        .van-cell-group::after {
           border: none;
-          background-color: #1088f2;
-          right: 0.5rem;
-          top: 0rem;
+        }
+        .van-cell {
+          margin-top: 2rem;
         }
       }
-      ._1iEQ {
-        margin-top: 1.5rem;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        .img {
-          margin-left: 0.625rem;
-          margin-bottom: 1rem;
-          height: 4.5rem;
-          position: relative;
-          img {
-            width: 100%;
-            height: 100%;
-          }
-          .time {
-            position: absolute;
-            top: 5%;
-            right: 4%;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: #fff;
-            font-size: 0.6rem;
-            line-height: 1.2rem;
-                padding: 0 .4rem;
-            font-weight: 600;
-            height: 1.2rem;
-            border-radius: 0.2rem;
-          }
-        }
+    }
+    .Btn {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      .btn {
+        border-radius: 0.2rem;
+        width: 7rem;
+        height: 2.2rem;
+        background-color: #f7f7f7;
+        border: 0 solid #b0b0b0;
+        color: #b0b0b0;
+        font-size: 0.8rem;
+      }
+      .btn:last-child {
+        color: #fff;
+        background-color: #1088f2;
       }
     }
   }

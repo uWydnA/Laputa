@@ -145,16 +145,6 @@ export default {
     }).then(res => {
       this.photolist = res.data.data.items
     })
-    // this.$axios({
-    //   url:'http://39.99.182.33/api/users/login',
-    //   method :'post',
-    //   data : {
-    //     tel : 'admin',
-    //     password : 'admin'
-    //   }
-    // }).then(res=>{
-    //   console.log(res)
-    // })
     this.scrollGet()
   },
   methods: {

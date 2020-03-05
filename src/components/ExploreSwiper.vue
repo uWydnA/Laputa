@@ -20,32 +20,32 @@
   </div>
 </template>
 <script>
-import "swiper/css/swiper.css";
+import 'swiper/css/swiper.css'
 export default {
-  data() {
+  data () {
     return {
       dataList: []
-    };
+    }
   },
-  props: ["urlList"],
-  mounted() {
+  props: ['urlList'],
+  mounted () {
     this.$axios
       .get(
         `/api/v2/tags/${this.urlList}/works?lang=zh-Hans&platform=web&device=mobile&limit=16&offset=0`
       )
       .then(res => {
         // console.log(res.data.data.items);
-        this.dataList = res.data.data.items;
-      });
+        this.dataList = res.data.data.items
+      })
   },
-  updated() {
-    new this.$swiper(".swiper-container", {
+  updated () {
+    new this.$swiper('.swiper-container', {
       slidesPerView: 3,
       spaceBetween: 30,
       freeMode: true
-    });
+    })
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 img {
