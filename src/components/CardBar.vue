@@ -71,7 +71,11 @@ export default {
     ...mapMutations('video', ['setVideoId']),
     setId (data) {
       this.setVideoId(data)
-      this.$router.push(`/video/${data}`)
+      if (this.cardata.duration) {
+        this.$router.push(`/video/${data}`)
+      } else {
+        this.$router.push(`/photos/${data}`)
+      }
     },
     clickZan () {
       if (!this.token) {
