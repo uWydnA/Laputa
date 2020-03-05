@@ -1,11 +1,11 @@
 <template>
-    <div v-if='item.title'>
-        <myheader :item='item'></myheader>
+    <div v-if='imgUrl'>
+        <myheader :headerObj='headerObj'></myheader>
         <div class='imgbox'>
           <img :src='imgUrl'/>
         </div>
-        <share :item='item'></share>
-        <introduce :item='item'></introduce>
+        <share :shareObj='shareObj'></share>
+        <introduce :introduceObj='introduceObj'></introduce>
         <div class='banner'>
             <a href='/contests/2019?from=Mobile-detail-banner_2019contest_CN'>
               <img src='https://sp-webfront-cn.oss-cn-hangzhou.aliyuncs.com/skypixel/v2/public/website/assets/1583222779701-66b90de327d828b2003a99f11289421a.jpg'/>
@@ -26,8 +26,10 @@ import love from './video&photo/Love'
 export default {
   data () {
     return {
+      headerObj: {},
       imgUrl: '',
-      item: {}
+      shareObj: {},
+      introduceObj: {}
     }
   },
   components: {
@@ -40,8 +42,27 @@ export default {
   mounted () {
     this.$axios.get(`/api/v2/photos/${ this.$route.params.id }?lang=zh-Hans&platform=web&device=mobile&compatible=true`)
       .then(res => {
-        this.item = res.data.data.item
         this.imgUrl = res.data.data.item.image.small
+
+        this.headerObj = {
+          userName : res.data.data.item.user.name,
+          userImg : res.data.data.item.user.avatar.small,
+          location : res.data.data.item.location ? res.data.data.item.location.label : ''
+        }
+
+        this.shareObj = {
+          like_count : res.data.data.item.like_count,
+          comment_count : res.data.data.item.comment_count
+        }
+
+        this.introduceObj = {
+          title : res.data.data.item.title,
+          view_count : res.data.data.item.view_count,
+          equipment : res.data.data.item.equipment.name,
+          description : res.data.data.item.description,
+          created_at : res.data.data.item.created_at,
+          tags :　res.data.data.item.tags
+        }
       })
   },
   computed: {

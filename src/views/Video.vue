@@ -1,5 +1,5 @@
 <template>
-    <div v-if='item.title'>
+    <div v-if='videoUrl'>
         <myheader :headerObj='headerObj'></myheader>
         <myvideo :videoUrl='videoUrl' :posterUrl='posterUrl'></myvideo>
         <share :shareObj='shareObj'></share>
@@ -28,8 +28,7 @@ export default {
       videoUrl: '',
       posterUrl: '',
       shareObj: {},
-      introduceObj: {},
-      item: {},
+      introduceObj: {}
     }
   },
   components: {
