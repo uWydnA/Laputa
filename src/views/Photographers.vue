@@ -18,7 +18,7 @@
             </div>
             <i>{{data.name}}</i>
             <p>{{data.country_name}}</p>
-            <div class="_22r_">
+            <div class="_22r_" style="margin-left:3rem;">
               <span>{{data.credit_score}}</span>
               <span>声望</span>
             </div>
@@ -100,13 +100,14 @@ export default {
   justify-content: space-between;
   background-color: #fff;
   border-bottom: 1px solid #e8e8e8;
+  height: 3rem;
   .left {
     flex: 0.9;
-    height: 2.4rem;
-    line-height: 2.4rem;
+    height: 3rem;
+    line-height: 3rem;
     span {
       padding-left: 1rem;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
       line-height: 1.6rem;
       font-weight: 600;
       color: rgba(0, 0, 0, 0.85);
@@ -114,7 +115,6 @@ export default {
   }
   .right {
     align-items: center;
-    font-size: 0.8rem;
     line-height: 1.2rem;
     color: rgba(0, 0, 0, 0.85);
     position: relative;
@@ -126,7 +126,7 @@ export default {
       color: rgba(0, 0, 0, 0.85);
     }
     span {
-      font-size: 0.8rem;
+      font-size: 1rem;
       line-height: 1.2rem;
       color: rgba(0, 0, 0, 0.85);
     }
@@ -165,11 +165,10 @@ export default {
           font-style: normal;
           margin-left: 0.625rem;
           margin-top: 0.625rem;
-          font-size: 0.8rem;
+          font-size: 1rem;
           font-weight: bolder;
         }
         p {
-          font-size: 12px;
           margin: 0;
           margin-left: 3rem;
           margin-top: 0.325rem;
@@ -189,6 +188,7 @@ export default {
           :nth-child(1) {
             color: rgba(0, 0, 0, 0.85);
           }
+
         }
         button {
           position: absolute;
