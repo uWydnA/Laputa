@@ -4,11 +4,11 @@
       <span>注册</span>
     </div>
     <div class="pro">
-      <a class="active">
-        <span>个人</span>
+      <a>
+        <span :class="isShowA" @click="handleA()">个人</span>
       </a>
       <a>
-        <span>公司</span>
+        <span :class="isShowB" @click="handleB()">公司</span>
       </a>
     </div>
     <form>
@@ -86,7 +86,13 @@ export default {
       b: false,
       c: false,
       d: false,
-      e: false
+      e: false,
+      isShowA: {
+        active: true
+      },
+      isShowB: {
+        active: false
+      }
     }
   },
   methods: {
@@ -147,7 +153,7 @@ export default {
     },
     handleSin () {
       if (this.a && this.b && this.c && this.d && this.e) {
-        Toast.success('注册成功,3s后跳转登录页面')
+        Toast.success('注册成功,即将跳转登录页面')
         this.$axios({
           url: 'http://39.99.182.33/api/users/register',
           method: 'post',
@@ -160,7 +166,7 @@ export default {
         })
         setTimeout(() => {
           this.$router.push('/login')
-        }, 3000)
+        }, 1000)
       } else {
         Toast.fail('注册失败，请重新注册')
       }
@@ -190,6 +196,14 @@ export default {
           Toast.fail(res.data.message)
         }
       })
+    },
+    handleA () {
+      this.isShowA.active = true
+      this.isShowB.active = false
+    },
+    handleB () {
+      this.isShowA.active = false
+      this.isShowB.active = true
     }
   }
 }
@@ -223,6 +237,7 @@ export default {
         margin-top: .2rem;
         background-color: #1088f2;
       }
+
     }
     .code{
       display: flex;
@@ -282,7 +297,7 @@ export default {
     }
     .codeImg{
       flex: 1;
-      background: url(https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2016852068,2432474498&fm=26&gp=0.jpg) no-repeat;
+      background: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583428769002&di=b0d2f90134ef72a0e248c790eb0ee2f4&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20170919%2F4a396e47d2c94abda851d0e4778bc889.jpeg) no-repeat;
       margin-left: 0.5rem;
       height: 2.3rem;
       margin-top: 1.2rem;
