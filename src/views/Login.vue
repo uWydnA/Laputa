@@ -41,7 +41,7 @@
 </template>
 <script>
 import Vue from 'vue'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import { Checkbox, Toast } from 'vant'
 Vue.use(Checkbox).use(Toast)
 export default {
@@ -55,6 +55,9 @@ export default {
       a: false,
       b: false
     }
+  },
+  computed: {
+    ...mapState('login', ['namePassword'])
   },
   methods: {
     ...mapMutations('login', ['setToken', 'setNamePassword']),
@@ -100,16 +103,35 @@ export default {
         }).then(res => {
           if (res.data.code === '10008') {
             Toast.success('登录成功，3s后自动跳转主页')
-            this.setToken(res.data.data.token)
+            this.setToken({
+              token: res.data.data.token,
+              userId: res.data.data.userid
+            })
+            console.log(res)
             setTimeout(() => {
               this.$router.push('/')
             }, 3000)
             // 是否点击了保存密码
             if (this.checked) {
-              this.setNamePassword({
-                tel: this.phoneNumber,
-                password: this.password
-              })
+              if (this.namePassword.length === 0) {
+                this.setNamePassword({
+                  tel: this.phoneNumber,
+                  password: this.password
+                })
+              } else {
+                var temp = this.namePassword.some((val) => {
+                  return val.tel === this.phoneNumber
+                })
+                console.log(temp)
+                if (temp) {
+                  console.log('此前已保存')
+                } else {
+                  this.setNamePassword({
+                    tel: this.phoneNumber,
+                    password: this.password
+                  })
+                }
+              }
             }
           } else if (res.data.code === '10007') {
             Toast.fail('密码错误')

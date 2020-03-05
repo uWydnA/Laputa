@@ -28,10 +28,10 @@
       <div class='phoneN'>
         <div class="lable">
           <span>请输入手机验证码*</span>
-          <input type="text" />
+          <input type="text" v-model.lazy="phoneCode" @change="pCode" />
         </div>
         <div class="setNum">
-          <button class='setN'>发送验证码</button>
+          <button class='setN' @click="setPcode()">发送验证码</button>
         </div>
       </div>
       <div class="enter">
@@ -77,40 +77,42 @@ export default {
       phoneNumber: '',
       password: '',
       passwordAgin: '',
+      phoneCode: '',
+      messageCode: '',
       codeKey: '',
       isDisabled: true,
       random: Math.random().toString(36).substr(2, 4),
       a: false,
       b: false,
       c: false,
-      d: false
+      d: false,
+      e: false
     }
   },
   methods: {
     PhNb () {
       var reg = /^1[3-9]\d{9}$/
       if (reg.test(this.phoneNumber)) {
-        var temp = this.namePassword.some((val) => {
-          return val.userName === this.phoneNumber
-        })
-        if (temp) {
-          Toast.fail('该手机号已注册')
-          this.a = false
-        } else {
-          this.a = true
-          console.log(this.a)
-        }
+        this.a = true
+        // var temp = this.namePassword.some((val) => {
+        //   return val.userName === this.phoneNumber
+        // })
+        // if (temp) {
+        //   Toast.fail('该手机号已注册')
+        //   this.a = false
+        // } else {
+        //   this.a = true
+        //   console.log(this.a)
+        // }
       } else {
         Toast.fail('格式不符,11位手机号码')
         this.a = false
-        console.log(this.a)
       }
     },
     Pass () {
       // 至少8个字符，至少1个大写字母，1个小写字母和1个数字：
       var reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
       if (reg.test(this.password)) {
-        // console.log(this.password)
         this.b = true
         console.log(this.b)
       } else {
@@ -121,28 +123,30 @@ export default {
     },
     passAgin () {
       if (this.passwordAgin === this.password) {
-        console.log(this.passwordAgin)
         this.c = true
-        console.log(this.c)
       } else {
         Toast.fail('2次输入不一致')
         this.c = false
-        console.log(this.c)
       }
     },
     code () {
       if (this.codeKey === this.random) {
-        console.log(this.codeKey)
         this.d = true
-        console.log(this.d)
       } else {
         Toast.fail('验证码错误')
         this.d = false
-        console.log(this.d)
+      }
+    },
+    pCode () {
+      if ((this.phoneCode * 1) === this.messageCode) {
+        this.e = true
+      } else {
+        Toast.fail('手机验证码错误')
+        this.e = false
       }
     },
     handleSin () {
-      if (this.a && this.b && this.c && this.d) {
+      if (this.a && this.b && this.c && this.d && this.e) {
         Toast.success('注册成功,3s后跳转登录页面')
         this.$axios({
           url: 'http://39.99.182.33/api/users/register',
@@ -170,6 +174,22 @@ export default {
     },
     handleRemeber () {
       console.log('注册按钮是否可以点击', !this.checked)
+    },
+    setPcode () {
+      this.$axios({
+        url: `http://39.99.182.33/api/users/sendCode?tel=${this.phoneNumber}`,
+        method: 'get'
+      }).then(res => {
+        console.log(res)
+        if (res.data.code === '10001') {
+          Toast.fail(res.data.message)
+        } else if (res.data.code === '10004') {
+          Toast.success(res.data.message)
+          this.messageCode = res.data.data
+        } else if (res.data.code === '10005') {
+          Toast.fail(res.data.message)
+        }
+      })
     }
   }
 }
