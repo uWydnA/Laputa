@@ -31,7 +31,7 @@
           <p>{{cardata.comment_count}}</p>
         </div>
         <div class="share">
-          <van-icon name="manager-o" size="1.3rem" />
+          <i class="iconfont icon-icon-test14" style="font-size:1.3rem"></i>
           <p>分享</p>
         </div>
       </div>
