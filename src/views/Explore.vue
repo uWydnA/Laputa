@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="title">
-      <router-link to="/explore/list" v-for="(data,index) in titleImg" :key="index" class="box">
+      <div v-for="(data,index) in titleImg" :key="index" @click="handleT(data.slug)" class="box">
         <img :src="data.image" class="img1" />
         <div class="box1">
           <img :src="data.icon" class="img2" />
-          <p>自然</p>
+          <p>{{data.name}}</p>
         </div>
-      </router-link>
+      </div>
       <biaoqian></biaoqian>
       <router-view></router-view>
     </div>
@@ -17,12 +17,16 @@
 <script>
 import Vue from 'vue'
 import { Grid, GridItem, Image } from 'vant'
-import axios from 'axios'
 import biaoqian from '@/components/Biaoqian'
 Vue.use(Grid)
 Vue.use(GridItem)
 Vue.use(Image)
 export default {
+  methods: {
+    handleT (data) {
+      this.$router.push(`/topics/${data}`)
+    }
+  },
   components: {
     biaoqian
   },
@@ -32,7 +36,7 @@ export default {
     }
   },
   mounted () {
-    axios
+    this.$axios
       .get('/api/v2/topics?lang=zh-Hans&platform=web&device=mobile&limit=10')
       .then(res => {
         console.log(res.data.data.items)
@@ -48,12 +52,14 @@ export default {
     position: relative;
     display: inline-block;
     width: 50%;
+    background: white;
     .img1 {
       width: 100%;
       vertical-align: bottom;
       box-sizing: border-box;
       padding-bottom: 2px;
       padding-right: 2px;
+      background: white;
     }
     .box1 {
       position: absolute;
@@ -62,13 +68,16 @@ export default {
       top: 0px;
       left: 0px;
       .img2 {
-        margin: 28px 0 0 50px;
+        position: absolute;
+        bottom: 60px;
+        left: 50px;
         width: 50%;
       }
       p {
+        position: absolute;
         vertical-align: baseline;
-        top: 69px;
-        left: 50px;
+        top: 60px;
+        left: 80px;
         color: white;
         text-align: center;
         color: #fff;
@@ -78,34 +87,4 @@ export default {
     }
   }
 }
-
-// .title {
-//   width: 100%;
-//   .box {
-//     position: relative;
-//     .img1 {
-//       box-sizing: border-box;
-//       width: 50%;
-//       vertical-align: bottom;
-//       padding: 2px;
-//     }
-//     .box1 {
-//       display: block;
-//       position: absolute;
-//       width: 100%;
-//       height: 100%;
-//       top: -75px;
-//       left: 50px;
-//       .img2 {
-//         width: 50%;
-//       }
-//       p {
-//         text-align: center;
-//         color: white;
-//         text-align: left;
-//         margin-left: 35px;
-//       }
-//     }
-//   }
-// }
 </style>
