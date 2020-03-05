@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import navbar from "@/components/Navbar";
+import navbar from '@/components/Navbar'
 export default {
   components: {
     navbar
   }
-};
+}
 </script>
 <style lang="scss">
 html.body {

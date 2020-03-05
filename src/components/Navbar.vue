@@ -23,7 +23,7 @@
   </div>
 </template>
 <script>
-import Vue from "vue";
+import Vue from 'vue'
 import {
   DropdownMenu,
   DropdownItem,
@@ -32,47 +32,47 @@ import {
   List,
   Cell,
   Overlay
-} from "vant";
-Vue.use(Icon);
-Vue.use(NavBar);
-Vue.use(DropdownMenu);
-Vue.use(DropdownItem);
-Vue.use(List);
-Vue.use(Cell);
-Vue.use(Overlay);
+} from 'vant'
+Vue.use(Icon)
+Vue.use(NavBar)
+Vue.use(DropdownMenu)
+Vue.use(DropdownItem)
+Vue.use(List)
+Vue.use(Cell)
+Vue.use(Overlay)
 export default {
-  data() {
+  data () {
     return {
       //
       list: [
-        { url: "/", name: "首页" },
-        { url: "/explore", name: "探索" },
-        { url: "/photographers/recommended", name: "摄影师" },
-        { url: "/notifications/messages", name: "消息" }
+        { url: '/', name: '首页' },
+        { url: '/explore', name: '探索' },
+        { url: '/photographers/recommended', name: '摄影师' },
+        { url: '/notifications/messages', name: '消息' }
       ],
       listshow: false,
-      lefticon: "wap-nav"
-    };
+      lefticon: 'wap-nav'
+    }
   },
   methods: {
-    onClickLeft() {
-      this.listshow = !this.listshow;
-      this.lefticon = this.lefticon === "clear" ? "wap-nav" : "clear";
+    onClickLeft () {
+      this.listshow = !this.listshow
+      this.lefticon = this.lefticon === 'clear' ? 'wap-nav' : 'clear'
     },
-    onClickRight() {},
-    handleClick(data) {
-      this.listshow = false;
-      this.lefticon = this.lefticon === "clear" ? "wap-nav" : "clear";
-      this.$router.push(data);
+    onClickRight () {},
+    handleClick (data) {
+      this.listshow = false
+      this.lefticon = this.lefticon === 'clear' ? 'wap-nav' : 'clear'
+      this.$router.push(data)
     },
-    checkLogin() {
-      if (localStorage.getItem("token")) {
+    checkLogin () {
+      if (localStorage.getItem('token')) {
       } else {
-        this.$router.push("/login");
+        this.$router.push('/login')
       }
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

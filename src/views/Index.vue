@@ -70,17 +70,17 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { Toast, Lazyload } from "vant";
-import swiper from "@/components/Swiper";
-import swiperHot from "@/components/SwiperBackground";
-import swiperSmall from "@/components/SwiperSmall";
-import carbar from "@/components/CardBar";
-import { mapMutations, mapState } from "vuex";
-Vue.use(Toast);
+import Vue from 'vue'
+import { Toast, Lazyload } from 'vant'
+import swiper from '@/components/Swiper'
+import swiperHot from '@/components/SwiperBackground'
+import swiperSmall from '@/components/SwiperSmall'
+import carbar from '@/components/CardBar'
+import { mapMutations, mapState } from 'vuex'
+Vue.use(Toast)
 Vue.use(Lazyload, {
   lazyComponent: true
-});
+})
 export default {
   components: {
     swiper,
@@ -88,7 +88,7 @@ export default {
     carbar,
     swiperSmall
   },
-  data() {
+  data () {
     return {
       swiperlist: [],
       hotslist: [],
@@ -98,53 +98,53 @@ export default {
       ulHeight: 5500,
       flag: true,
       inow: 0,
-      clientH: "0px",
+      clientH: '0px',
       isshowV: false
-    };
+    }
   },
-  mounted() {
+  mounted () {
     Toast.loading({
-      message: "加载中...",
+      message: '加载中...',
       forbidClick: true,
       overlay: true
-    });
+    })
     this.$axios({
       url:
-        "/api/v2/page-contents/skypixel_root_mobile_banner_top/banners?lang=zh-Hans&platform=web&device=mobile"
+        '/api/v2/page-contents/skypixel_root_mobile_banner_top/banners?lang=zh-Hans&platform=web&device=mobile'
     }).then(res => {
-      this.swiperlist = res.data.data.items.map(val => val.cover);
-    });
+      this.swiperlist = res.data.data.items.map(val => val.cover)
+    })
     this.$axios({
-      url: "/api/v2/geo-tags/weight?lang=zh-Hans&platform=web&device=mobile"
+      url: '/api/v2/geo-tags/weight?lang=zh-Hans&platform=web&device=mobile'
     }).then(res => {
       res.data.data.items.forEach(val => {
         if (val.image && val.featured) {
-          this.hotslist.push(val);
+          this.hotslist.push(val)
         }
-      });
-    });
+      })
+    })
     this.$axios({
       url:
-        "api/v2/mobile/feeds?lang=zh-Hans&platform=web&device=mobile&limit=16&offset=0"
+        'api/v2/mobile/feeds?lang=zh-Hans&platform=web&device=mobile&limit=16&offset=0'
     }).then(res => {
-      this.barlist = res.data.data.items;
+      this.barlist = res.data.data.items
       setTimeout(() => {
-        this.ulHeight = document.querySelector(".infoUl").clientHeight - 1200;
-      }, 0);
-      Toast.clear();
-    });
+        this.ulHeight = document.querySelector('.infoUl').clientHeight - 1200
+      }, 0)
+      Toast.clear()
+    })
     this.$axios({
       url:
-        "/api/v2/tags?lang=zh-Hans&platform=web&device=mobile&limit=10&offset=0"
+        '/api/v2/tags?lang=zh-Hans&platform=web&device=mobile&limit=10&offset=0'
     }).then(res => {
-      this.taglist = res.data.data.items;
-    });
+      this.taglist = res.data.data.items
+    })
     this.$axios({
       url:
-        "/api/v2/users?lang=zh-Hans&platform=web&device=mobile&limit=10&offset=0"
+        '/api/v2/users?lang=zh-Hans&platform=web&device=mobile&limit=10&offset=0'
     }).then(res => {
-      this.photolist = res.data.data.items;
-    });
+      this.photolist = res.data.data.items
+    })
     // this.$axios({
     //   url:'http://39.99.182.33/api/users/login',
     //   method :'post',
@@ -155,54 +155,54 @@ export default {
     // }).then(res=>{
     //   console.log(res)
     // })
-    this.scrollGet();
+    this.scrollGet()
   },
   methods: {
-    ...mapMutations("login", ["setToken"]),
-    scrollGet() {
+    ...mapMutations('login', ['setToken']),
+    scrollGet () {
       if (this.barlist) {
         window.onscroll = () => {
-          var num = 0;
+          var num = 0
           if (document.documentElement.scrollTop > this.ulHeight) {
-            num = parseInt(document.documentElement.scrollTop / this.ulHeight);
+            num = parseInt(document.documentElement.scrollTop / this.ulHeight)
             if (num > this.inow) {
-              this.flag = true;
+              this.flag = true
             }
             if (this.flag) {
-              this.flag = false;
-              this.inow = num;
+              this.flag = false
+              this.inow = num
               this.$axios({
                 url: `/api/v2/mobile/feeds?lang=zh-Hans&platform=web&device=mobile&limit=16&offset=${16 *
                   num}`
               }).then(res => {
                 if (this.barlist) {
-                  this.barlist = [...this.barlist, ...res.data.data.items];
+                  this.barlist = [...this.barlist, ...res.data.data.items]
                 }
-              });
+              })
             }
           }
-        };
+        }
       }
     },
-    showV() {
-      this.clientH = document.documentElement.clientHeight;
-      document.body.style.height = this.clientH + "px";
-      document.body.style.overflow = "hidden";
-      this.isshowV = true;
+    showV () {
+      this.clientH = document.documentElement.clientHeight
+      document.body.style.height = this.clientH + 'px'
+      document.body.style.overflow = 'hidden'
+      this.isshowV = true
     },
-    cancelV() {
-      document.body.style.overflow = "visible";
-      this.isshowV = false;
+    cancelV () {
+      document.body.style.overflow = 'visible'
+      this.isshowV = false
     }
   },
-  beforeRouteLeave(to, from, next) {
-    window.onscroll = null;
-    next();
+  beforeRouteLeave (to, from, next) {
+    window.onscroll = null
+    next()
   },
   computed: {
-    ...mapState("login", ["token"])
+    ...mapState('login', ['token'])
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

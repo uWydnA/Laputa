@@ -16,19 +16,19 @@
 </template>
 
 <script>
-import "swiper/css/swiper.min.css";
+import 'swiper/css/swiper.min.css'
 export default {
-  props: ["swiperlist", "swiperClass"],
-  mounted() {
+  props: ['swiperlist', 'swiperClass'],
+  mounted () {
     const str =
-      "." + (this.swiperClass ? this.swiperClass : "swiper-container");
+      '.' + (this.swiperClass ? this.swiperClass : 'swiper-container')
     this.swiper = new this.$swiper(str, {
       slidesPerView: 3,
       spaceBetween: 10,
       freeMode: true
-    });
+    })
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
