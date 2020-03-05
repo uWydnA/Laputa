@@ -9,9 +9,9 @@
         <van-icon name="chat-o" size="1.3rem" />
         <p>{{cardata.comment_count}}</p>
       </div>
-      <div class="share">
+      <div class="share" @click="clickShare">
         <i class="iconfont icon-icon-test14" style="font-size:1.3rem"></i>
-        <p @click="clickShare">分享</p>
+        <p>分享</p>
       </div>
     </div>
     <van-action-sheet v-model="show" title="分享">

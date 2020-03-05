@@ -30,7 +30,7 @@ body {
 }
 .fadeshow-enter-active,
 .fadeshow-leave-active {
-  transition: all 0.5s;
+  transition: all 0.3s;
   opacity: 1;
   transform: translateY(0px);
 }

@@ -1,6 +1,6 @@
 <template>
   <li v-if="cardata">
-    <div class="top" @click="setId(cardata.slug)">
+    <div class="top" @click="setId(cardata.slug)" v-if='noTags'>
       <div class="left">
         <img :src="cardata.user.avatar.small" alt />
       </div>
@@ -38,7 +38,7 @@ export default {
       goodjob: 'good-job-o'
     }
   },
-  props: ['cardata'],
+  props: ['cardata', 'noTags'],
   filters: {
     timeFilter (data) {
       return (

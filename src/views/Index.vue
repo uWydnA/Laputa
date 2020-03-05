@@ -19,7 +19,6 @@
       swiperClass="hotslist"
       :key="hotslist.length?hotslist.length+'swiperHot':'swiperHot'"
     ></swiperHot>
-
     <div class="hotVideo" :style="{bottom:clientH}" v-if="isshowV" @click.stop="cancelV"></div>
     <transition name="shiii">
       <div class="box" v-if="isshowV">
@@ -33,7 +32,7 @@
     <lazy-component>
       <div class="infoUl">
         <ul>
-          <carbar v-for="data in barlist.slice(0,2)" :key="data.slug" :cardata="data"></carbar>
+          <carbar v-for="data in barlist.slice(0,2)" :key="data.slug" :cardata="data" :noTags='true'></carbar>
         </ul>
         <div class="hotTag">
           <div class="left">
@@ -49,7 +48,7 @@
           :key="taglist.length?taglist.length+'swiperTag':'swiperTag'"
         ></swiperSmall>
         <ul>
-          <carbar v-for="data in barlist.slice(2,4)" :key="data.slug" :cardata="data"></carbar>
+          <carbar v-for="data in barlist.slice(2,4)" :key="data.slug" :cardata="data" :noTags='true'></carbar>
         </ul>
         <div class="photoman">
           <div class="left">
@@ -62,7 +61,7 @@
           :key="photolist.length?photolist.length+'swiperPhoto':'swiperPhoto'"
         ></swiperSmall>
         <ul>
-          <carbar v-for="data in barlist.slice(4)" :key="data.slug" :cardata="data"></carbar>
+          <carbar v-for="data in barlist.slice(4)" :key="data.slug" :cardata="data" :noTags='true'></carbar>
         </ul>
       </div>
     </lazy-component>
@@ -124,8 +123,7 @@ export default {
       })
     })
     this.$axios({
-      url:
-        'api/v2/mobile/feeds?lang=zh-Hans&platform=web&device=mobile&limit=16&offset=0'
+      url: 'api/v2/mobile/feeds?lang=zh-Hans&platform=web&device=mobile&limit=16&offset=0'
     }).then(res => {
       this.barlist = res.data.data.items
       setTimeout(() => {
