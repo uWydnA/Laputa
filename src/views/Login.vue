@@ -6,19 +6,19 @@
     <form>
       <div class="lable">
         <span>请输入你的邮箱账号\手机*</span>
-        <input type="text" />
+        <input type="text" v-model.lazy='phoneNumber' @change="PhNb" />
       </div>
       <div class="lable">
         <span>请输入密码*</span>
-        <input type="password" />
+        <input type="password" v-model.lazy="password" />
       </div>
       <div class="code">
         <div class="lable">
           <span>验证码*</span>
-          <input type="text" />
+          <input type="text" v-model.lazy="codeKey" @change="code"/>
         </div>
         <div class="codeImg" @click="handleChangeCode()">
-          <span>111</span>
+          <span>{{this.random}}</span>
         </div>
       </div>
       <div class='remberPw'>
@@ -26,7 +26,7 @@
         <span style="color:blue" @click="handleForget()">忘记密码?</span>
       </div>
       <div class="loginIN">
-        <button>登录</button>
+        <button @click="loginNow()">登录</button>
       </div>
     </form>
     <div class='Noaccount'>
@@ -41,30 +41,83 @@
 </template>
 <script>
 import Vue from 'vue'
-import { Checkbox } from 'vant'
-Vue.use(Checkbox)
+import { mapMutations } from 'vuex'
+import { Checkbox, Toast } from 'vant'
+Vue.use(Checkbox).use(Toast)
 export default {
   data () {
     return {
-      checked: false
+      checked: false,
+      phoneNumber: '',
+      password: '',
+      codeKey: '',
+      random: Math.random().toString(36).substr(2, 4),
+      a: false,
+      b: false
     }
   },
   methods: {
-    onSubmit () {
-      console.log('点击登录，跳转首页')
+    ...mapMutations('login', ['setToken', 'setNamePassword']),
+    PhNb () {
+      var reg = /^1[3-9]\d{9}$/
+      if (reg.test(this.phoneNumber)) {
+        this.a = true
+      } else {
+        Toast.fail('格式不符,11位手机号码')
+        this.a = false
+      }
+    },
+    code () {
+      if (this.codeKey === this.random) {
+        this.b = true
+      } else {
+        this.b = false
+        Toast.fail('验证码错误')
+      }
     },
     handleRegister () {
       console.log('点击跳转注册页面')
       this.$router.push('/signup')
     },
     handleChangeCode () {
-      console.log('点击更换验证码')
+      this.random = Math.random().toString(36).substr(2, 4)
     },
     handleForget () {
       console.log('忘记密码')
     },
     handleRemeber () {
       console.log('是否记住密码', !this.checked)
+    },
+    loginNow () {
+      if (this.a && this.b) {
+        this.$axios({
+          url: 'http://39.99.182.33/api/users/login',
+          method: 'post',
+          data: {
+            tel: this.phoneNumber,
+            password: this.password
+          }
+        }).then(res => {
+          if (res.data.code === '10008') {
+            Toast.success('登录成功，3s后自动跳转主页')
+            this.setToken(res.data.data.token)
+            setTimeout(() => {
+              this.$router.push('/')
+            }, 3000)
+            // 是否点击了保存密码
+            if (this.checked) {
+              this.setNamePassword({
+                tel: this.phoneNumber,
+                password: this.password
+              })
+            }
+          } else if (res.data.code === '10007') {
+            Toast.fail('密码错误')
+          } else if (res.data.code === '10006') {
+            Toast.fail('手机号未注册')
+          }
+        })
+      }
     }
   }
 }
@@ -105,12 +158,15 @@ export default {
     }
     .codeImg{
       flex: 1;
-      background: url(../../public/codeBg.jpg) no-repeat;
+      background: url(https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2016852068,2432474498&fm=26&gp=0.jpg) no-repeat;
       margin-left: 0.5rem;
       height: 2.3rem;
       margin-top: 1.2rem;
       line-height: 2.3rem;
       text-align: center;
+      span{
+        font-size: 2rem;
+      }
     }
     .remberPw{
       display: flex;

@@ -5,7 +5,7 @@
     </div>
     <div class="pro">
       <a class="active">
-        <span>个人 </span>
+        <span>个人</span>
       </a>
       <a>
         <span>公司</span>
@@ -14,15 +14,15 @@
     <form>
       <div class="lable">
         <span>请输入你的手机号*</span>
-        <input type="text" />
+        <input type="text" v-model.lazy="phoneNumber" @change="PhNb"/>
       </div>
       <div class="code">
         <div class="lable">
           <span>验证码*</span>
-          <input type="text" />
+          <input type="text" v-model.lazy="codeKey" @change="code" />
         </div>
         <div class="codeImg" @click="handleChangeCode()">
-          <span>111</span>
+          <span>{{this.random}}</span>
         </div>
       </div>
       <div class='phoneN'>
@@ -37,26 +37,26 @@
       <div class="enter">
         <div class="lable">
           <span>请输入密码*</span>
-          <input type="password" />
+          <input type="password" v-model.lazy="password" @change="Pass"/>
         </div>
       </div>
       <div class="lable">
         <span>请再次填写密码*</span>
-        <input type="password" />
+        <input type="password" v-model.lazy="passwordAgin" @change="passAgin" />
       </div>
       <div class='remberPw'>
-        <van-checkbox-group v-model="result">
-          <van-checkbox name="a"  shape="square" icon-size="18px">
+        <div>
+          <van-checkbox v-model="checked"  shape="square" icon-size="18px" style="margin-bottom:15px" @click="handleRemeber()">
               我同意
             <span>使用条款</span>
               和
             <span>隐私政策</span>
           </van-checkbox>
-          <van-checkbox name="b"  shape="square" icon-size="18px">获取天空之城最新活动、服务、资讯等信息。</van-checkbox>
-        </van-checkbox-group>
+          <van-checkbox shape="square" icon-size="18px" v-model="checkedT">获取天空之城最新活动、服务、资讯等信息</van-checkbox>
+        </div>
       </div>
       <div class="loginIN">
-        <button>注册</button>
+        <button @click="handleSin()" :disabled='!this.checked'>注册</button>
       </div>
     </form>
     <div class='Noaccount'>
@@ -67,31 +67,109 @@
 </template>
 <script>
 import Vue from 'vue'
-import { Checkbox, CheckboxGroup } from 'vant'
-Vue.use(Checkbox).use(CheckboxGroup)
+import { Checkbox, CheckboxGroup, Toast } from 'vant'
+Vue.use(Checkbox).use(CheckboxGroup).use(Toast)
 export default {
   data () {
     return {
       checked: false,
-      result: []
+      checkedT: false,
+      phoneNumber: '',
+      password: '',
+      passwordAgin: '',
+      codeKey: '',
+      isDisabled: true,
+      random: Math.random().toString(36).substr(2, 4),
+      a: false,
+      b: false,
+      c: false,
+      d: false
     }
   },
   methods: {
-    onSubmit () {
-      console.log('点击登录，跳转首页')
+    PhNb () {
+      var reg = /^1[3-9]\d{9}$/
+      if (reg.test(this.phoneNumber)) {
+        var temp = this.namePassword.some((val) => {
+          return val.userName === this.phoneNumber
+        })
+        if (temp) {
+          Toast.fail('该手机号已注册')
+          this.a = false
+        } else {
+          this.a = true
+          console.log(this.a)
+        }
+      } else {
+        Toast.fail('格式不符,11位手机号码')
+        this.a = false
+        console.log(this.a)
+      }
+    },
+    Pass () {
+      // 至少8个字符，至少1个大写字母，1个小写字母和1个数字：
+      var reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+      if (reg.test(this.password)) {
+        // console.log(this.password)
+        this.b = true
+        console.log(this.b)
+      } else {
+        Toast.fail('至少8个字符，至少1个大写字母，1个小写字母和1个数字')
+        this.b = false
+        console.log(this.b)
+      }
+    },
+    passAgin () {
+      if (this.passwordAgin === this.password) {
+        console.log(this.passwordAgin)
+        this.c = true
+        console.log(this.c)
+      } else {
+        Toast.fail('2次输入不一致')
+        this.c = false
+        console.log(this.c)
+      }
+    },
+    code () {
+      if (this.codeKey === this.random) {
+        console.log(this.codeKey)
+        this.d = true
+        console.log(this.d)
+      } else {
+        Toast.fail('验证码错误')
+        this.d = false
+        console.log(this.d)
+      }
+    },
+    handleSin () {
+      if (this.a && this.b && this.c && this.d) {
+        Toast.success('注册成功,3s后跳转登录页面')
+        this.$axios({
+          url: 'http://39.99.182.33/api/users/register',
+          method: 'post',
+          data: {
+            tel: this.phoneNumber,
+            password: this.password
+          }
+        }).then(res => {
+          console.log(res)
+        })
+        setTimeout(() => {
+          this.$router.push('/login')
+        }, 3000)
+      } else {
+        Toast.fail('注册失败，请重新注册')
+      }
     },
     handleLogin () {
       console.log('点击跳转登录页面')
       this.$router.push('/login')
     },
     handleChangeCode () {
-      console.log('点击更换验证码')
-    },
-    handleForget () {
-      console.log('忘记密码')
+      this.random = Math.random().toString(36).substr(2, 4)
     },
     handleRemeber () {
-      console.log('是否记住密码', !this.checked)
+      console.log('注册按钮是否可以点击', !this.checked)
     }
   }
 }
@@ -113,6 +191,17 @@ export default {
       a{
         margin-right: 1.6rem;
         font-weight: 700;
+      }
+      .active{
+        color: #1088f2;
+      }
+      .active::after{
+        content: "";
+        display: block;
+        width: 1.8rem;
+        height: .1rem;
+        margin-top: .2rem;
+        background-color: #1088f2;
       }
     }
     .code{
@@ -173,12 +262,15 @@ export default {
     }
     .codeImg{
       flex: 1;
-      background: url(../../public/codeBg.jpg) no-repeat;
+      background: url(https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2016852068,2432474498&fm=26&gp=0.jpg) no-repeat;
       margin-left: 0.5rem;
       height: 2.3rem;
       margin-top: 1.2rem;
       line-height: 2.3rem;
       text-align: center;
+      span{
+        font-size: 2rem;
+      }
     }
     .loginIN{
       button{
@@ -205,6 +297,15 @@ export default {
       justify-content: flex-start;
       margin-top: .75rem;
       font-size: 0.6rem;
+      .checkbox{
+        width: 1.2rem;
+        height: 1.2rem;
+        background: none;
+        vertical-align: middle;
+      }
+      span{
+        color: #1088f2;
+      }
     }
   }
 </style>
