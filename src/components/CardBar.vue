@@ -14,7 +14,7 @@
     </div>
     <div class="content" @click="setId(cardata.slug)">
       <img :src="cardata.image.small" alt />
-      <div class="duration">
+      <div class="duration" v-if='cardata.duration'>
         <van-icon name="play-circle-o" />
         <span>{{cardata.duration | timeFilter}}</span>
       </div>
@@ -26,7 +26,7 @@
           <van-icon :name="goodjob" size="1.3rem" />
           <p>{{cardata.like_count}}</p>
         </div>
-        <div class="chat" @click='clickChat'>
+        <div class="chat" @click="clickChat">
           <van-icon name="chat-o" size="1.3rem" />
           <p>{{cardata.comment_count}}</p>
         </div>
@@ -78,6 +78,9 @@ export default {
         if (this.goodjob === 'good-job-o') {
           this.goodjob = 'good-job'
           this.cardata.like_count++
+        } else {
+          this.goodjob = 'good-job-o'
+          this.cardata.like_count--
         }
       } else {
         this.$router.push('/login')
@@ -94,6 +97,7 @@ export default {
 img {
   width: 100%;
   height: 100%;
+  display: block;
 }
 * {
   margin: 0;
@@ -149,7 +153,10 @@ li {
   }
   .content {
     position: relative;
-    img{width: 100%;height: 16rem}
+    img {
+      width: 100%;
+      height: 16rem;
+    }
     .duration {
       position: absolute;
       top: 0.6rem;
@@ -180,7 +187,7 @@ li {
       overflow: hidden;
       word-break: break-word;
       word-wrap: break-word;
-      font-size: 1rem;
+      font-size: .9rem;
       font-weight: 500;
       color: #333;
       height: 2rem;
@@ -204,11 +211,11 @@ li {
           margin-right: 0.3rem;
         }
         p {
-          font-size: .8rem;
+          font-size: 0.8rem;
         }
       }
       .share p {
-        font-size: 0.6rem;
+        font-size: 0.7rem;
       }
     }
   }

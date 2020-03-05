@@ -19,6 +19,7 @@
       swiperClass="hotslist"
       :key="hotslist.length?hotslist.length:'swiperHot'"
     ></swiperHot>
+
     <div class="hotVideo" :style="{bottom:clientH}" v-if="isshowV" @click.stop="cancelV"></div>
     <transition name="shiii">
       <div class="box" v-if="isshowV">
@@ -30,9 +31,40 @@
       </div>
     </transition>
     <lazy-component>
-      <ul class="infoUl">
-        <carbar v-for="data in barlist" :key="data.slug" :cardata="data"></carbar>
-      </ul>
+      <div class="infoUl">
+        <ul>
+          <carbar v-for="data in barlist.slice(0,2)" :key="data.slug" :cardata="data"></carbar>
+        </ul>
+        <div class="hotTag">
+          <div class="left">
+            <span>热门标签</span>
+          </div>
+          <a class="right">
+            <span>查看全部</span>
+          </a>
+        </div>
+        <swiperSmall
+          :swiperlist="taglist"
+          swiperClass="taglist"
+          :key="taglist.length?taglist.length:'swiperTag'"
+        ></swiperSmall>
+        <ul>
+          <carbar v-for="data in barlist.slice(2,4)" :key="data.slug" :cardata="data"></carbar>
+        </ul>
+        <div class="photoman">
+          <div class="left">
+            <span>推荐摄影师</span>
+          </div>
+        </div>
+        <swiperSmall
+          :swiperlist="photolist"
+          swiperClass="photolist"
+          :key="photolist.length?photolist.length:'swiperPhoto'"
+        ></swiperSmall>
+        <ul>
+          <carbar v-for="data in barlist.slice(4)" :key="data.slug" :cardata="data"></carbar>
+        </ul>
+      </div>
     </lazy-component>
   </div>
 </template>
@@ -42,6 +74,7 @@ import Vue from 'vue'
 import { Toast, Lazyload } from 'vant'
 import swiper from '@/components/Swiper'
 import swiperHot from '@/components/SwiperBackground'
+import swiperSmall from '@/components/SwiperSmall'
 import carbar from '@/components/CardBar'
 import { mapMutations, mapState } from 'vuex'
 Vue.use(Toast)
@@ -52,13 +85,16 @@ export default {
   components: {
     swiper,
     swiperHot,
-    carbar
+    carbar,
+    swiperSmall
   },
   data () {
     return {
       swiperlist: [],
       hotslist: [],
       barlist: [],
+      taglist: [],
+      photolist: [],
       ulHeight: 5500,
       flag: true,
       inow: 0,
@@ -96,6 +132,18 @@ export default {
         this.ulHeight = document.querySelector('.infoUl').clientHeight - 1200
       }, 0)
       Toast.clear()
+    })
+    this.$axios({
+      url:
+        '/api/v2/tags?lang=zh-Hans&platform=web&device=mobile&limit=10&offset=0'
+    }).then(res => {
+      this.taglist = res.data.data.items
+    })
+    this.$axios({
+      url:
+        '/api/v2/users?lang=zh-Hans&platform=web&device=mobile&limit=10&offset=0'
+    }).then(res => {
+      this.photolist = res.data.data.items
     })
     this.scrollGet()
   },
@@ -160,21 +208,21 @@ export default {
   outline: 0;
   background-color: rgba(0, 0, 0, 0.8);
 }
-  .box {
-    position: fixed;
-    width: 100%;
-    height: 10rem;
-    top: 45%;
-    left: 0;
-    right: 0;
+.box {
+  position: fixed;
+  width: 100%;
+  height: 10rem;
+  top: 45%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  z-index: 999999;
+  video {
+    display: block;
+    width: 90%;
     margin: 0 auto;
-    z-index: 999999;
-    video {
-      display: block;
-      width: 90%;
-      margin: 0 auto;
-    }
   }
+}
 .hot {
   background-color: #fff;
   padding: 1.6rem 0.8rem 1.2rem;
@@ -192,9 +240,29 @@ export default {
     color: #1890ff;
   }
 }
+.hotTag,
+.photoman {
+  padding: 0.8rem 0 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #4b4b4b;
+  font-weight: 600;
+  margin: 0 1rem 0.4rem;
+  .left {
+    color: #4b4b4b;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .right {
+    color: #838385;
+    font-size: 0.6rem;
+    font-weight: 400;
+  }
+}
 .shiii-enter-active,
 .shiii-leave-active {
-  transition: all .5s;
+  transition: all 0.5s;
   opacity: 1;
   transform: scale(1);
 }
