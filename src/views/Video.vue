@@ -47,7 +47,7 @@
 <script>
 import myvideo from '@/components/Video'
 import axios from 'axios'
-import { mapState } from 'Vuex'
+import { mapState } from 'vuex'
 
 export default {
   data () {
