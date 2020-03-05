@@ -41,6 +41,14 @@ const routes = [{
   component: () => import('@/views/Notifications')
 },
 {
+  path: '/tags/:id',
+  component: () => import('@/views/Tags')
+},
+{
+  path: '/users/:id',
+  component: () => import('@/views/Users')
+},
+{
   path: '/video/:id',
   component: () => import('@/views/Video')
 },

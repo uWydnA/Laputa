@@ -33,6 +33,7 @@ import {
   Cell,
   Overlay
 } from 'vant'
+import { mapState } from 'vuex'
 Vue.use(Icon)
 Vue.use(NavBar)
 Vue.use(DropdownMenu)
@@ -54,6 +55,9 @@ export default {
       lefticon: 'wap-nav'
     }
   },
+  computed: {
+    ...mapState('login', ['token'])
+  },
   methods: {
     onClickLeft () {
       this.listshow = !this.listshow
@@ -66,7 +70,8 @@ export default {
       this.$router.push(data)
     },
     checkLogin () {
-      if (localStorage.getItem('token')) {
+      if (this.token) {
+        this.$router.push('/notifications/messages')
       } else {
         this.$router.push('/login')
       }
