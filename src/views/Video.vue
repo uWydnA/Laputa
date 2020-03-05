@@ -1,9 +1,9 @@
 <template>
-    <div v-if='item.title' :key='this.videoId'>
-        <myheader :item='item'></myheader>
-        <myvideo :videoUrl='videoUrl' :posterUrl='posterUrl' v-if='videoUrl'></myvideo>
-        <share :item='item'></share>
-        <introduce :item='item'></introduce>
+    <div v-if='item.title'>
+        <myheader :headerObj='headerObj'></myheader>
+        <myvideo :videoUrl='videoUrl' :posterUrl='posterUrl'></myvideo>
+        <share :shareObj='shareObj'></share>
+        <introduce :introduceObj='introduceObj'></introduce>
         <div class='banner'>
             <a>
               <img src='https://sp-webfront-cn.oss-cn-hangzhou.aliyuncs.com/skypixel/v2/public/website/assets/1583222779701-66b90de327d828b2003a99f11289421a.jpg'/>
@@ -24,9 +24,12 @@ import love from './video&photo/Love'
 export default {
   data () {
     return {
+      headerObj: {},
       videoUrl: '',
       posterUrl: '',
-      item: {}
+      shareObj: {},
+      introduceObj: {},
+      item: {},
     }
   },
   components: {
@@ -42,9 +45,28 @@ export default {
         this.videoUrl = res.data.data.item.cdn_url.medium
         this.posterUrl = res.data.data.item.image.medium
         this.item = res.data.data.item
-        // console.log(res)
+
+        this.headerObj = {
+          userName : res.data.data.item.user.name,
+          userImg : res.data.data.item.user.avatar.small,
+          location : res.data.data.item.location ? res.data.data.item.location.label : ''
+        }
+
+        this.shareObj = {
+          like_count : res.data.data.item.like_count,
+          comment_count : res.data.data.item.comment_count
+        }
+
+        this.introduceObj = {
+          title : res.data.data.item.title,
+          view_count : res.data.data.item.view_count,
+          equipment : res.data.data.item.equipment.name,
+          description : res.data.data.item.description,
+          created_at : res.data.data.item.created_at,
+          tags :　res.data.data.item.tags
+        }
       })
-    console.log(this.videoId)
+    // console.log(this.videoId)
     // console.log(this.$route.params.id)
   },
   computed: {

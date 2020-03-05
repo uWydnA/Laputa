@@ -2,18 +2,18 @@
     <div class='introduce'>
         <div class='title'>
             <img src='//spcn-webfront.skypixel.com/skypixel/v2/public/assets/images/ordinary-s.25f33d98.svg'/>
-            <p>{{ item.title }}</p>
+            <p>{{ introduceObj.title }}</p>
         </div>
         <div class='browse'>
-            <p><span>{{ item.view_count }}</span><span>次浏览</span></p>
-            <p><span>使用</span><span class='equipment'>{{ item.equipment.name }}</span><span>拍摄</span></p>
+            <p><span>{{ introduceObj.view_count }}</span><span>次浏览</span></p>
+            <p><span>使用</span><span class='equipment'>{{ introduceObj.equipment }}</span><span>拍摄</span></p>
         </div>
         <div class='describe' :class='isOpen?"spread":""'>
-            <p class='description'>{{ item.description }}</p>
-            <p class='time'>{{ item.created_at | filterDate}}</p>
+            <p class='description'>{{ introduceObj.description }}</p>
+            <p class='time'>{{ introduceObj.created_at | filterDate}}</p>
             <div class='tag'>
                 <ul>
-                    <li v-for='data in item.tags' :key='data.name'>
+                    <li v-for='data in introduceObj.tags' :key='data.name'>
                     {{ data.name }}
                     </li>
                 </ul>
@@ -34,7 +34,7 @@ Vue.filter('filterDate', (date) => {
 })
 
 export default {
-    props:['item'],
+    props:['introduceObj'],
     data () {
         return {
             isOpen: false
@@ -90,7 +90,7 @@ export default {
             padding: .5rem 0;
             overflow-x: scroll;
             ul{
-                width: 50rem;
+                width: 80rem;
                 display: flex;
                 li{
                     font: .9rem/2 '';

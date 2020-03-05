@@ -60,7 +60,7 @@ export default {
         handelpath (slug, url) {
             if (url) {
                 this.$router.push(`/video/${slug}`)
-                this.setVideoId(slug)
+                this.$router.go(0)
             } else {
                 this.$router.push(`/photos/${slug}`)
             }
@@ -96,12 +96,14 @@ export default {
                         white-space: nowrap; 
                     }
                     .user{
+                        display: flex;
                         img{
                             border-radius: 50%;
                             width: 1rem;
                         }
                         span{
                             font-size: .8rem;
+                            margin-left: .3rem;
                         }
                     }
                 }
