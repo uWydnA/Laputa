@@ -70,8 +70,8 @@ export default {
     // 请求数据
     axios.get(`/api/v2/videos/${this.videoId}?lang=zh-Hans&platform=web&device=mobile`)
       .then(res => {
-        // this.videoUrl = res.data.data.item.cdn_url.medium
-        // this.posterUrl = res.data.data.item.image.medium
+        this.videoUrl = res.data.data.item.cdn_url.medium
+        this.posterUrl = res.data.data.item.image.medium
 
         this.userImg = res.data.data.item.user.avatar.small
         this.userName = res.data.data.item.user.name
