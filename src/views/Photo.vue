@@ -1,5 +1,5 @@
 <template>
   <div>
-    New
+    Photo -- {{$route.params.id}}
   </div>
 </template>

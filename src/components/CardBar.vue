@@ -40,57 +40,61 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { Button } from "vant";
-import { mapMutations, mapState } from "vuex";
-Vue.use(Button);
+import Vue from 'vue'
+import { Button } from 'vant'
+import { mapMutations, mapState } from 'vuex'
+Vue.use(Button)
 export default {
-  data() {
+  data () {
     return {
-      goodjob: "good-job-o"
-    };
+      goodjob: 'good-job-o'
+    }
   },
-  props: ["cardata"],
+  props: ['cardata'],
   filters: {
-    timeFilter(data) {
+    timeFilter (data) {
       return (
         (parseInt(data / 60) < 10
-          ? "0" + parseInt(data / 60)
+          ? '0' + parseInt(data / 60)
           : parseInt(data / 60)) +
-        ":" +
+        ':' +
         (parseInt(data % 60) < 10
-          ? "0" + parseInt(data % 60)
+          ? '0' + parseInt(data % 60)
           : parseInt(data % 60))
-      );
+      )
     }
   },
   computed: {
-    ...mapState("login", ["token"])
+    ...mapState('login', ['token'])
   },
   methods: {
-    ...mapMutations("video", ["setVideoId"]),
-    setId(data) {
-      this.setVideoId(data);
-      this.$router.push(`/video/${data}`);
-    },
-    clickZan() {
-      if (!this.token) {
-        if (this.goodjob === "good-job-o") {
-          this.goodjob = "good-job";
-          this.cardata.like_count++;
-        } else {
-          this.goodjob = "good-job-o";
-          this.cardata.like_count--;
-        }
+    ...mapMutations('video', ['setVideoId']),
+    setId (data) {
+      this.setVideoId(data)
+      if (this.cardata.duration) {
+        this.$router.push(`/video/${data}`)
       } else {
-        this.$router.push("/login");
+        this.$router.push(`/photos/${data}`)
       }
     },
-    clickChat() {
-      this.setId(this.cardata.slug);
+    clickZan () {
+      if (!this.token) {
+        if (this.goodjob === 'good-job-o') {
+          this.goodjob = 'good-job'
+          this.cardata.like_count++
+        } else {
+          this.goodjob = 'good-job-o'
+          this.cardata.like_count--
+        }
+      } else {
+        this.$router.push('/login')
+      }
+    },
+    clickChat () {
+      this.setId(this.cardata.slug)
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
