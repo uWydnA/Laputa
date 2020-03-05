@@ -2,7 +2,7 @@
   <div class="swiperbar">
     <div class="swiper-container" v-if="swiperlist" :class="swiperClass">
       <div class="swiper-wrapper">
-        <div class="swiper-slide" v-for="data in swiperlist" :key="data.name" v-show="data">
+        <div class="swiper-slide" v-for="data in swiperlist" :key="data.name" v-show="data" @click='toTags(data.slug)'>
           <img :src="data.image.small" alt="data" style="width:100%;height:100%" v-if='data.image' />
            <img :src="data.cover.small" alt="data" style="width:100%;height:100%"  v-if='data.cover' />
           <p>{{data.name}}</p>
@@ -24,6 +24,11 @@ export default {
       spaceBetween: 10,
       freeMode: true
     })
+  },
+  methods: {
+    toTags (data) {
+      this.$router.push(`/tags/${data}`)
+    }
   }
 }
 </script>
