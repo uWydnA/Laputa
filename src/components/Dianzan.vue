@@ -154,7 +154,7 @@ export default {
     }
   },
 
-  props: ['cardata'],
+  props: ['cardata', 'commentHeight'],
   methods: {
     ...mapMutations('video', ['setVideoId']),
     setId (data) {
@@ -179,7 +179,11 @@ export default {
       }
     },
     clickChat () {
-      this.setId(this.cardata.slug)
+      if (!location.hash.includes('video') && !location.hash.includes('photos')) {
+        this.setId(this.cardata.slug)
+      } else {
+        document.documentElement.scrollTop = this.commentHeight
+      }
     },
     clickShare () {
       this.show = true
