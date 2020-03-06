@@ -25,7 +25,8 @@ export default {
       if (this.carlist) {
         window.onscroll = () => {
           var num = 0
-          if (document.documentElement.scrollTop > 90) {
+          const menu = document.querySelector('.menu')
+          if (document.documentElement.scrollTop > (menu.offsetTop - 10)) {
             this.showNav = true
           } else {
             this.showNav = false

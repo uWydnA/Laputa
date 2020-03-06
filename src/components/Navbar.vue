@@ -10,6 +10,7 @@
       class="logo"
       src="//spcn-webfront.skypixel.com/skypixel/v2/public/assets/images/logo-cn.00c32c62.svg"
       alt="logo"
+      @click='backHome'
     />
     <transition name="fade">
       <van-list class="list" v-if="listshow">
@@ -69,6 +70,11 @@ export default {
     onClickLeft () {
       this.listshow = !this.listshow
       this.lefticon = this.lefticon === 'clear' ? 'wap-nav' : 'clear'
+    },
+    backHome () {
+      if (!(/^#\/$/.test(location.hash))) {
+        this.$router.push('/')
+      }
     },
     onClickRight () {},
     handleClick (data) {
