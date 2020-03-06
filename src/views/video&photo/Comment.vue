@@ -29,7 +29,7 @@
                         <span>回复</span>
                     </div>
                     <div class='time'>
-                        {{ item.user.created_at }}
+                        {{ item.created_at | filterDate}}
                     </div>
                     <div class='message'>
                         {{ item.content }}
@@ -42,9 +42,14 @@
 
 <script>
 import Vue from 'vue'
+import moment from 'moment'
 import { Popup } from 'vant'
 import { mapState, mapMutations } from 'vuex'
 Vue.use(Popup)
+// 时间戳过滤
+Vue.filter('filterDate', (date) => {
+  return moment(date).format('YYYY-MM-DD  h:mm')
+})
 
 export default {
   props: ['count'],
@@ -55,7 +60,11 @@ export default {
     }
   },
   mounted () {
-    this.$axios.get(`/api/v2/videos/${this.$route.params.id}/comments?lang=zh-Hans&platform=web&device=mobile&limit=10&offset=0`)
+    var path = this.$route.matched[0].path.slice(1, 7)
+    if (path === 'video/') path = path.replace('/', 's')
+
+    this.$axios.get(`/api/v2/${path}/${this.$route.params.id}/comments?
+    lang=zh-Hans&platform=web&device=mobile&limit=10&offset=0`)
       .then(res => {
         this.setComment({
           slug: this.$route.params.id,
@@ -101,6 +110,7 @@ export default {
     computedData () {
       var data = this.comment.filter(val => val.slug === this.$route.params.id)
       if (data.length) {
+        console.log(data[0].items)
         return data[0].items
       } else {
         return [{

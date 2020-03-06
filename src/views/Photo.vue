@@ -13,6 +13,7 @@
                 </a>
             </div>
             <love></love>
+            <comment :count='comment_count'></comment>
         </div>
     </div>
 </template>
@@ -23,6 +24,7 @@ import myheader from './video&photo/Header'
 import share from './video&photo/Share'
 import introduce from './video&photo/Introduce'
 import love from './video&photo/Love'
+import comment from './video&photo/Comment'
 
 export default {
   data () {
@@ -30,14 +32,16 @@ export default {
       headerObj: {},
       imgUrl: '',
       shareObj: {},
-      introduceObj: {}
+      introduceObj: {},
+      comment_count: 0
     }
   },
   components: {
     myheader,
     share,
     introduce,
-    love
+    love,
+    comment
   },
   mounted () {
     this.$axios.get(`/api/v2/photos/${this.$route.params.id}?lang=zh-Hans&platform=web&device=mobile&compatible=true`)
@@ -63,6 +67,8 @@ export default {
           created_at: res.data.data.item.created_at,
           tags: res.data.data.item.tags
         }
+
+        this.comment_count = res.data.data.item.comment_count
       })
   },
   computed: {
