@@ -109,6 +109,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+* {
+  background: white;
+}
 .change {
   position: fixed;
   top: 46px;
@@ -116,7 +119,23 @@ export default {
   z-index: 10;
 }
 
+.van-dropdown-menu {
+  border: 0rem;
+}
+
 .biaoti {
   margin-left: 20px;
+  position: relative;
+  z-index: 20;
+  padding: 2rem 2rem 1.5rem;
+  box-sizing: border-box;
+  h2 {
+    margin: 0rem;
+    line-height: 3rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
 }
 </style>
