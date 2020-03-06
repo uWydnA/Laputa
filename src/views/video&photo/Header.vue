@@ -10,7 +10,7 @@
                 </p>
             </div>
         </div>
-        <van-button class='follow' @click='handelFollow' plain hairline :type='isFollow?"info":"default"' 
+        <van-button class='follow' @click='handelFollow' plain hairline :type='isFollow?"info":"default"'
         size='small' :text='isFollow?"已关注":"+关注"'></van-button>
     </div>
 </template>
@@ -21,18 +21,18 @@ import { Button, Icon } from 'vant'
 Vue.use(Button).use(Icon)
 
 export default {
-    props:['headerObj'],
-    data () {
-        return {
-            isFollow: false,
-        }
-    },
-    methods:{
-        // 是否关注
-        handelFollow () {
-            this.isFollow = !this.isFollow
-        }
+  props: ['headerObj'],
+  data () {
+    return {
+      isFollow: false
     }
+  },
+  methods: {
+    // 是否关注
+    handelFollow () {
+      this.isFollow = !this.isFollow
+    }
+  }
 }
 </script>
 

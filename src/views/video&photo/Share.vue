@@ -15,23 +15,23 @@
 import Praise from '@/components/Dianzan'
 
 export default {
-    props:['shareObj'],
-    data () {
-        return {
-            ispraise: false,
-            isCollect: false,
-            praiseNum: 0
-        }
-    },
-    components:{
-        Praise
-    },
-    methods: {  
-        // 收藏
-        handelCollect () {
-            this.isCollect = !this.isCollect
-        }
+  props: ['shareObj'],
+  data () {
+    return {
+      ispraise: false,
+      isCollect: false,
+      praiseNum: 0
     }
+  },
+  components: {
+    Praise
+  },
+  methods: {
+    // 收藏
+    handelCollect () {
+      this.isCollect = !this.isCollect
+    }
+  }
 }
 </script>
 

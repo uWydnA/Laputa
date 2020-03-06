@@ -32,8 +32,8 @@
 
 <script>
 export default {
-  props: ["myData"]
-};
+  props: ['myData']
+}
 </script>
 
 <style lang="scss" scoped>

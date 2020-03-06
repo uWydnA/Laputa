@@ -28,33 +28,34 @@
 <script>
 import Vue from 'vue'
 import moment from 'moment'
+import BScroll from 'better-scroll'
 // 时间戳过滤
 Vue.filter('filterDate', (date) => {
   return moment(date).format('YYYY-MM-DD  h:mm')
 })
-import BScroll from 'better-scroll'
 
 export default {
-    props:['introduceObj'],
-    data () {
-        return {
-            isOpen: false,
-            wrapperWidth: ''
-        }
-    },
-    methods: {
-    },
-    mounted () {
-        this.wrapperWidth = { width : (document.documentElement.clientWidth + 'px') || 
-            (document.body.clientWidth + 'px')
-        }
-        new BScroll('.introduceWrapper', {
-            scrollbar: {
-                fade: true
-            },
-            scrollX:true
-        })    
+  props: ['introduceObj'],
+  data () {
+    return {
+      isOpen: false,
+      wrapperWidth: ''
     }
+  },
+  methods: {
+  },
+  mounted () {
+    this.wrapperWidth = {
+      width: (document.documentElement.clientWidth + 'px') ||
+            (document.body.clientWidth + 'px')
+    }
+    new BScroll('.introduceWrapper', {
+      scrollbar: {
+        fade: true
+      },
+      scrollX: true
+    })
+  }
 }
 </script>
 
@@ -109,9 +110,9 @@ export default {
                 margin: .1rem .5rem;
                 background:rgb(240, 238, 238);
                 color: gray;
-                white-space: nowrap; 
-            }  
-        } 
+                white-space: nowrap;
+            }
+        }
     }
     .open{
         text-align: center;

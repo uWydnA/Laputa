@@ -22,50 +22,50 @@
 import { mapMutations } from 'vuex'
 
 export default {
-    data () {
-        return{
-            dataList: []
-        }
-    },
-    mounted () {
-        this.$axios.get('api/v2/videos/dji-2019-4bec5d1d-f1b1-45e2-ad43-cd797ecf7f59?lang=zh-Hans&platform=web&device=mobile').
-            then(res => {
-                this.dataList.unshift({
-                    title: res.data.data.item.title,
-                    image: res.data.data.item.image.large,
-                    slug: res.data.data.item.slug,
-                    userName: res.data.data.item.user.name,
-                    userImg: res.data.data.item.user.avatar.small,
-                    cdn_url: res.data.data.item.cdn_url
-                })
-            })
-        this.$axios.get('api/v2/mobile/feeds?lang=zh-Hans&platform=web&device=mobile&limit=20&offset=400').
-            then(res => {
-                res.data.data.items.forEach((val,index) => {
-                    if(index<5){
-                        this.dataList.push({
-                            title: val.title,
-                            image: val.image.large,
-                            slug: val.slug,
-                            userName: val.user.name,
-                            userImg: val.user.avatar.small,
-                            cdn_url: val.cdn_url
-                        })
-                    }
-                });             
-            })
-    },
-    methods:{
-        ...mapMutations('video', ['setVideoId']),
-        handelpath (slug, url) {
-            if (url) {
-                this.$router.push(`/video/${slug}`)
-                this.$router.go(0)
-            } else {
-                this.$router.push(`/photos/${slug}`)
-            }
-        }
+  data () {
+    return {
+      dataList: []
     }
+  },
+  mounted () {
+    this.$axios.get('api/v2/videos/dji-2019-4bec5d1d-f1b1-45e2-ad43-cd797ecf7f59?lang=zh-Hans&platform=web&device=mobile')
+      .then(res => {
+        this.dataList.unshift({
+          title: res.data.data.item.title,
+          image: res.data.data.item.image.large,
+          slug: res.data.data.item.slug,
+          userName: res.data.data.item.user.name,
+          userImg: res.data.data.item.user.avatar.small,
+          cdn_url: res.data.data.item.cdn_url
+        })
+      })
+    this.$axios.get('api/v2/mobile/feeds?lang=zh-Hans&platform=web&device=mobile&limit=20&offset=400')
+      .then(res => {
+        res.data.data.items.forEach((val, index) => {
+          if (index < 5) {
+            this.dataList.push({
+              title: val.title,
+              image: val.image.large,
+              slug: val.slug,
+              userName: val.user.name,
+              userImg: val.user.avatar.small,
+              cdn_url: val.cdn_url
+            })
+          }
+        })
+      })
+  },
+  methods: {
+    ...mapMutations('video', ['setVideoId']),
+    handelpath (slug, url) {
+      if (url) {
+        this.$router.push(`/video/${slug}`)
+        this.$router.go(0)
+      } else {
+        this.$router.push(`/photos/${slug}`)
+      }
+    }
+  }
 }
 </script>
 
@@ -93,7 +93,7 @@ export default {
                         width: 13.25rem;
                         overflow: hidden;
                         text-overflow:ellipsis;
-                        white-space: nowrap; 
+                        white-space: nowrap;
                     }
                     .user{
                         display: flex;

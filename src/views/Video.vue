@@ -45,43 +45,44 @@ export default {
     love
   },
   mounted () {
-    this.wrapperHeight = { height: (document.documentElement.clientHeight - 46 + 'px') || 
+    this.wrapperHeight = {
+      height: (document.documentElement.clientHeight - 46 + 'px') ||
       (document.body.clientHeight - 46 + 'px')
     }
 
-    this.$axios.get(`/api/v2/videos/${ this.$route.params.id }?lang=zh-Hans&platform=web&device=mobile`)
+    this.$axios.get(`/api/v2/videos/${this.$route.params.id}?lang=zh-Hans&platform=web&device=mobile`)
       .then(res => {
         this.videoUrl = res.data.data.item.cdn_url.medium
         this.posterUrl = res.data.data.item.image.medium
         this.item = res.data.data.item
 
         this.headerObj = {
-          userName : res.data.data.item.user.name,
-          userImg : res.data.data.item.user.avatar.small,
-          location : res.data.data.item.location ? res.data.data.item.location.label : ''
+          userName: res.data.data.item.user.name,
+          userImg: res.data.data.item.user.avatar.small,
+          location: res.data.data.item.location ? res.data.data.item.location.label : ''
         }
 
         this.shareObj = {
-          like_count : res.data.data.item.like_count,
-          comment_count : res.data.data.item.comment_count
+          like_count: res.data.data.item.like_count,
+          comment_count: res.data.data.item.comment_count
         }
 
         this.introduceObj = {
-          title : res.data.data.item.title,
-          view_count : res.data.data.item.view_count,
-          equipment : res.data.data.item.equipment.name,
-          description : res.data.data.item.description,
-          created_at : res.data.data.item.created_at,
-          tags :　res.data.data.item.tags
+          title: res.data.data.item.title,
+          view_count: res.data.data.item.view_count,
+          equipment: res.data.data.item.equipment.name,
+          description: res.data.data.item.description,
+          created_at: res.data.data.item.created_at,
+          tags: res.data.data.item.tags
         }
-    })
+      })
 
     new BScroll('.wrapper', {
       scrollbar: {
-        fade: true,
+        fade: true
       },
       click: true,
-      scrollX:true
+      scrollX: true
     })
     // console.log(this.videoId)
     // console.log(this.$route.params.id)
@@ -103,5 +104,5 @@ export default {
           }
       }
    }
-    
+
 </style>
