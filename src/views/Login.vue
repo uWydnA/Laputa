@@ -102,7 +102,7 @@ export default {
           }
         }).then(res => {
           if (res.data.code === '10008') {
-            Toast.success('登录成功，3s后自动跳转主页')
+            Toast.success('登录成功，即将跳转主页')
             this.setToken({
               token: res.data.data.token,
               userId: res.data.data.userid
@@ -110,7 +110,7 @@ export default {
             console.log(res)
             setTimeout(() => {
               this.$router.push('/')
-            }, 3000)
+            }, 1000)
             // 是否点击了保存密码
             if (this.checked) {
               if (this.namePassword.length === 0) {
@@ -180,7 +180,7 @@ export default {
     }
     .codeImg{
       flex: 1;
-      background: url(https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2016852068,2432474498&fm=26&gp=0.jpg) no-repeat;
+      background: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583428769002&di=b0d2f90134ef72a0e248c790eb0ee2f4&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20170919%2F4a396e47d2c94abda851d0e4778bc889.jpeg) no-repeat;
       margin-left: 0.5rem;
       height: 2.3rem;
       margin-top: 1.2rem;

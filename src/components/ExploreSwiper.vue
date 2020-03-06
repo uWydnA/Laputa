@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="swiper-container">
+    <div class="swiper-container" v-if="this.dataList" :class="'lz'+urlList.substring(0,4)">
       <div class="swiper-wrapper">
-        <div class="swiper-slide" v-for="data in this.dataList" :key="data.image.small">
+        <div class="swiper-slide" v-for="data in this.dataList" :key="data.slug">
           <img :src="data.image.small" alt />
           <div class="meng"></div>
           <div>
@@ -20,32 +20,37 @@
   </div>
 </template>
 <script>
-import 'swiper/css/swiper.css'
+import "swiper/css/swiper.css";
 export default {
-  data () {
+  data() {
     return {
       dataList: []
-    }
+    };
   },
-  props: ['urlList'],
-  mounted () {
+  props: ["urlList"],
+  mounted() {
     this.$axios
       .get(
         `/api/v2/tags/${this.urlList}/works?lang=zh-Hans&platform=web&device=mobile&limit=16&offset=0`
       )
       .then(res => {
         // console.log(res.data.data.items);
-        this.dataList = res.data.data.items
-      })
+        this.dataList = res.data.data.items;
+      });
   },
-  updated () {
-    new this.$swiper('.swiper-container', {
+  updated() {
+    const str =
+      "." +
+      ("lz" + this.urlList.substring(0, 4)
+        ? "lz" + this.urlList.substring(0, 4)
+        : "swiper-container");
+    new this.$swiper(str, {
       slidesPerView: 3,
       spaceBetween: 30,
       freeMode: true
-    })
+    });
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 img {
@@ -83,6 +88,8 @@ img {
     font-size: 0.7rem;
     font-weight: 600;
     color: #fff;
+    width: 5rem;
+    overflow: hidden;
   }
   .icon {
     position: absolute;
