@@ -11,8 +11,8 @@
         <div class='describe' :class='isOpen?"spread":""'>
             <p class='description'>{{ introduceObj.description }}</p>
             <p class='time'>{{ introduceObj.created_at | filterDate}}</p>
-            <div class='tag'>
-                <ul>
+            <div class='introduceWrapper' :style='wrapperWidth'>
+                <ul class='tag'>
                     <li v-for='data in introduceObj.tags' :key='data.name'>
                     {{ data.name }}
                     </li>
@@ -32,15 +32,28 @@ import moment from 'moment'
 Vue.filter('filterDate', (date) => {
   return moment(date).format('YYYY-MM-DD  h:mm')
 })
+import BScroll from 'better-scroll'
 
 export default {
     props:['introduceObj'],
     data () {
         return {
-            isOpen: false
+            isOpen: false,
+            wrapperWidth: ''
         }
     },
     methods: {
+    },
+    mounted () {
+        this.wrapperWidth = { width : (document.documentElement.clientWidth + 'px') || 
+            (document.body.clientWidth + 'px')
+        }
+        new BScroll('.introduceWrapper', {
+            scrollbar: {
+                fade: true
+            },
+            scrollX:true
+        })    
     }
 }
 </script>
@@ -86,21 +99,19 @@ export default {
             font: .8rem/2 '';
             color: rgb(190, 190, 190);
         }
-        .tag{
+        ul.tag{
             padding: .5rem 0;
-            overflow-x: scroll;
-            ul{
-                width: 80rem;
-                display: flex;
-                li{
-                    font: .9rem/2 '';
-                    padding: 0 .5rem;
-                    margin: .1rem .5rem;
-                    background:rgb(240, 238, 238);
-                    color: gray;
-                }  
-            }
-        }
+            display: flex;
+            width: 100rem;
+            li{
+                font: .9rem/2 '';
+                padding: 0 .5rem;
+                margin: .1rem .5rem;
+                background:rgb(240, 238, 238);
+                color: gray;
+                white-space: nowrap; 
+            }  
+        } 
     }
     .open{
         text-align: center;

@@ -1,15 +1,19 @@
 <template>
-    <div v-if='videoUrl'>
-        <myheader :headerObj='headerObj'></myheader>
-        <myvideo :videoUrl='videoUrl' :posterUrl='posterUrl'></myvideo>
-        <share :shareObj='shareObj'></share>
-        <introduce :introduceObj='introduceObj'></introduce>
-        <div class='banner'>
-            <a>
-              <img src='https://sp-webfront-cn.oss-cn-hangzhou.aliyuncs.com/skypixel/v2/public/website/assets/1583222779701-66b90de327d828b2003a99f11289421a.jpg'/>
-            </a>
+    <div class='wrapper' :style='wrapperHeight'>
+        <div class='box'>
+            <div v-if='videoUrl'>
+                <myheader :headerObj='headerObj'></myheader>
+                <myvideo :videoUrl='videoUrl' :posterUrl='posterUrl'></myvideo>
+                <share :shareObj='shareObj'></share>
+                <introduce :introduceObj='introduceObj'></introduce>
+                <div class='banner'>
+                    <a>
+                      <img src='https://sp-webfront-cn.oss-cn-hangzhou.aliyuncs.com/skypixel/v2/public/website/assets/1583222779701-66b90de327d828b2003a99f11289421a.jpg'/>
+                    </a>
+                </div>
+                <love></love>
+            </div>
         </div>
-        <love></love>
     </div>
 </template>
 
@@ -20,6 +24,7 @@ import myheader from './video&photo/Header'
 import share from './video&photo/Share'
 import introduce from './video&photo/Introduce'
 import love from './video&photo/Love'
+import BScroll from 'better-scroll'
 
 export default {
   data () {
@@ -28,7 +33,8 @@ export default {
       videoUrl: '',
       posterUrl: '',
       shareObj: {},
-      introduceObj: {}
+      introduceObj: {},
+      wrapperHeight: ''
     }
   },
   components: {
@@ -39,6 +45,10 @@ export default {
     love
   },
   mounted () {
+    this.wrapperHeight = { height: (document.documentElement.clientHeight - 46 + 'px') || 
+      (document.body.clientHeight - 46 + 'px')
+    }
+
     this.$axios.get(`/api/v2/videos/${ this.$route.params.id }?lang=zh-Hans&platform=web&device=mobile`)
       .then(res => {
         this.videoUrl = res.data.data.item.cdn_url.medium
@@ -64,7 +74,15 @@ export default {
           created_at : res.data.data.item.created_at,
           tags :　res.data.data.item.tags
         }
-      })
+    })
+
+    new BScroll('.wrapper', {
+      scrollbar: {
+        fade: true,
+      },
+      click: true,
+      scrollX:true
+    })
     // console.log(this.videoId)
     // console.log(this.$route.params.id)
   },
