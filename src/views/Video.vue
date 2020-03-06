@@ -1,19 +1,16 @@
 <template>
-    <div class='wrapper' :style='wrapperHeight'>
-        <div class='box'>
-            <div v-if='videoUrl'>
-                <myheader :headerObj='headerObj'></myheader>
-                <myvideo :videoUrl='videoUrl' :posterUrl='posterUrl'></myvideo>
-                <share :shareObj='shareObj'></share>
-                <introduce :introduceObj='introduceObj'></introduce>
-                <div class='banner'>
-                    <a>
-                      <img src='https://sp-webfront-cn.oss-cn-hangzhou.aliyuncs.com/skypixel/v2/public/website/assets/1583222779701-66b90de327d828b2003a99f11289421a.jpg'/>
-                    </a>
-                </div>
-                <love></love>
-            </div>
+    <div v-if='videoUrl'>
+        <myheader :headerObj='headerObj'></myheader>
+        <myvideo :videoUrl='videoUrl' :posterUrl='posterUrl'></myvideo>
+        <share :shareObj='shareObj'></share>
+        <introduce :introduceObj='introduceObj'></introduce>
+        <div class='banner'>
+            <a>
+              <img src='https://sp-webfront-cn.oss-cn-hangzhou.aliyuncs.com/skypixel/v2/public/website/assets/1583222779701-66b90de327d828b2003a99f11289421a.jpg'/>
+            </a>
         </div>
+        <love></love>
+        <comment :count='comment_count'></comment>
     </div>
 </template>
 
@@ -24,7 +21,7 @@ import myheader from './video&photo/Header'
 import share from './video&photo/Share'
 import introduce from './video&photo/Introduce'
 import love from './video&photo/Love'
-import BScroll from 'better-scroll'
+import comment from './video&photo/Comment'
 
 export default {
   data () {
@@ -34,7 +31,7 @@ export default {
       posterUrl: '',
       shareObj: {},
       introduceObj: {},
-      wrapperHeight: ''
+      comment_count: 0
     }
   },
   components: {
@@ -42,7 +39,8 @@ export default {
     myvideo,
     share,
     introduce,
-    love
+    love,
+    comment
   },
   mounted () {
     this.wrapperHeight = {
@@ -75,17 +73,9 @@ export default {
           created_at: res.data.data.item.created_at,
           tags: res.data.data.item.tags
         }
-      })
 
-    new BScroll('.wrapper', {
-      scrollbar: {
-        fade: true
-      },
-      click: true,
-      scrollX: true
-    })
-    // console.log(this.videoId)
-    // console.log(this.$route.params.id)
+        this.comment_count = res.data.data.item.comment_count
+      })
   },
   computed: {
     ...mapState('video', ['videoId'])

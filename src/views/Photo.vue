@@ -1,20 +1,18 @@
 <template>
-    <div class='wrapper' :style='wrapperHeight'>
-        <div class='content'>
-            <div v-if='imgUrl'>
-                <myheader :headerObj='headerObj'></myheader>
-                <div class='imgbox'>
-                  <img :src='imgUrl'/>
-                </div>
-                <share :shareObj='shareObj'></share>
-                <introduce :introduceObj='introduceObj'></introduce>
-                <div class='banner'>
-                    <a href='/contests/2019?from=Mobile-detail-banner_2019contest_CN'>
-                      <img src='https://sp-webfront-cn.oss-cn-hangzhou.aliyuncs.com/skypixel/v2/public/website/assets/1583222779701-66b90de327d828b2003a99f11289421a.jpg'/>
-                    </a>
-                </div>
-                <love></love>
+    <div class='content'>
+        <div v-if='imgUrl'>
+            <myheader :headerObj='headerObj'></myheader>
+            <div class='imgbox'>
+              <img :src='imgUrl'/>
             </div>
+            <share :shareObj='shareObj'></share>
+            <introduce :introduceObj='introduceObj'></introduce>
+            <div class='banner'>
+                <a href='/contests/2019?from=Mobile-detail-banner_2019contest_CN'>
+                  <img src='https://sp-webfront-cn.oss-cn-hangzhou.aliyuncs.com/skypixel/v2/public/website/assets/1583222779701-66b90de327d828b2003a99f11289421a.jpg'/>
+                </a>
+            </div>
+            <love></love>
         </div>
     </div>
 </template>
@@ -25,7 +23,6 @@ import myheader from './video&photo/Header'
 import share from './video&photo/Share'
 import introduce from './video&photo/Introduce'
 import love from './video&photo/Love'
-import BScroll from 'better-scroll'
 
 export default {
   data () {
@@ -33,8 +30,7 @@ export default {
       headerObj: {},
       imgUrl: '',
       shareObj: {},
-      introduceObj: {},
-      wrapperHeight: ''
+      introduceObj: {}
     }
   },
   components: {
@@ -44,11 +40,6 @@ export default {
     love
   },
   mounted () {
-    this.wrapperHeight = {
-      height: (document.documentElement.clientHeight - 46 + 'px') ||
-      (document.body.clientHeight - 46 + 'px')
-    }
-
     this.$axios.get(`/api/v2/photos/${this.$route.params.id}?lang=zh-Hans&platform=web&device=mobile&compatible=true`)
       .then(res => {
         this.imgUrl = res.data.data.item.image.small
@@ -73,13 +64,6 @@ export default {
           tags: res.data.data.item.tags
         }
       })
-
-    new BScroll('.wrapper', {
-      scrollbar: {
-        fade: true
-      },
-      click: true
-    })
   },
   computed: {
     ...mapState('video', ['videoId'])

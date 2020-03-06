@@ -79,6 +79,7 @@ export default {
                 border-radius: 0.3rem;
                 overflow: hidden;
                 box-shadow: 0 0 .1rem rgb(226, 225, 225);
+                background: #fff;
                 .imgbox{
                     width: 8.595rem;
                     height: 6.68rem;

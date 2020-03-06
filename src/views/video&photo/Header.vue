@@ -1,6 +1,6 @@
 <template>
      <div class='header'>
-        <div class='user'>
+        <div class='user' @click='handelUser()'>
             <img :src='headerObj.userImg'/>
             <div>
                 <h3>{{ headerObj.userName }}</h3>
@@ -31,6 +31,9 @@ export default {
     // 是否关注
     handelFollow () {
       this.isFollow = !this.isFollow
+    },
+    handelUser () {
+      console.log(1)
     }
   }
 }
