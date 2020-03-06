@@ -11,7 +11,8 @@ export default new Vuex.Store({
     reducer (data) {
       return {
         login: data.login,
-        video: data.video
+        video: data.video,
+        comment: data.comment
       }
     }
   })],
