@@ -1,8 +1,10 @@
 <template>
   <div>
     <van-nav-bar left-arrow @click-left="onClickLeft" @click-right="onClickRight" class="nav">
-      <van-icon :name="lefticon" slot="left" color="white" /><van-icon
-      name="setting-o"
+      <van-icon :name="lefticon" slot="left" color="white" />
+      <van-icon
+      name="chat-o"
+      info='1'
       slot="right"
       color="white"
       v-if="isLogined"
@@ -10,7 +12,7 @@
       @click='$router.push("/notifications/messages")'
       style="margin-right:1rem"
       />
-      <van-icon name="friends" slot="right" color="white" @click="checkLogin" v-show="noClick" />
+      <van-icon name="friends-o" slot="right" color="white" @click="checkLogin" v-show="noClick" />
     </van-nav-bar>
     <div class="dang"></div>
     <img
