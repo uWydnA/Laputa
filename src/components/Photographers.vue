@@ -59,27 +59,12 @@ Vue.filter('filter', data => {
   return (data / 1000).toFixed(1) + 'k'
 })
 export default {
-  props: ['url'],
+  props: ['url', 'datalist', 'pages'],
   data () {
     return {
-      datalist: [],
       currentPage: 1,
-      page: 0,
-      pages: 0
+      page: 0
     }
-  },
-  mounted () {
-    if (!this.$route.query.url) {
-      var url = `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-    } else {
-      url = `/api/v2/photographers/${this.$route.query.url}?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-    }
-    this.$axios({
-      url: url
-    }).then(res => {
-      this.datalist = res.data.data.items
-      this.pages = Math.round((res.data.data.total_items) / 20)
-    })
   },
   methods: {
     handleChange () {

@@ -46,7 +46,7 @@
         </van-popup>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view :datalist='datalist' :pages='pages'></router-view>
   </div>
 </template>
 <script>
@@ -73,7 +73,7 @@ export default {
       radio: '1',
       show: false,
       isShow: false,
-      type: 'all',
+      type: '',
       navlist: [
         {
           path: '/photographers/recommended',
@@ -96,7 +96,10 @@ export default {
           url: 'contract'
         }
       ],
-      index: 0
+      index: 0,
+      datalist: [],
+      page: 0,
+      pages: 0
     }
   },
   methods: {
@@ -106,10 +109,22 @@ export default {
     handleClick (index, data) {
       this.index = index
       this.isShow = false
+      var url='';
+      if (!this.$route.query.url) {
+        url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      } else {
+        url = `/api/v2/photographers/${this.$route.query.url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      }
+      this.$axios({
+        url: url
+      }).then(res => {
+        this.datalist = res.data.data.items
+        this.pages = Math.round((res.data.data.total_items) / 20)
+      })
       // console.log(this.url)
     },
     click1 () {
-      this.type = 'all'
+      this.type = ''
     },
     click2 () {
       this.type = 'personal'
@@ -119,7 +134,33 @@ export default {
     },
     click () {
       this.show = false
+      var url = 0
+      if (!this.$route.query.url) {
+        url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      } else {
+        url = `/api/v2/photographers/${this.$route.query.url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      }
+      this.$axios({
+        url: url
+      }).then(res => {
+        this.datalist = res.data.data.items
+        this.pages = Math.round((res.data.data.total_items) / 20)
+        this.type=''
+      })
     }
+  },
+  mounted () {
+    if (!this.$route.query.url) {
+      var url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+    } else {
+      url = `/api/v2/photographers/${this.$route.query.url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+    }
+    this.$axios({
+      url: url
+    }).then(res => {
+      this.datalist = res.data.data.items
+      this.pages = Math.round((res.data.data.total_items) / 20)
+    })
   }
 }
 </script>
