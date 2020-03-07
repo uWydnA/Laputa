@@ -60,7 +60,7 @@ export default {
     handelpath (slug, url) {
       if (url) {
         this.$router.push(`/video/${slug}`)
-        this.setVideoId(slug)
+        this.$router.go(0)
       } else {
         this.$router.push(`/photos/${slug}`)
       }
@@ -79,6 +79,7 @@ export default {
                 border-radius: 0.3rem;
                 overflow: hidden;
                 box-shadow: 0 0 .1rem rgb(226, 225, 225);
+                background: #fff;
                 .imgbox{
                     width: 8.595rem;
                     height: 6.68rem;
@@ -96,12 +97,14 @@ export default {
                         white-space: nowrap;
                     }
                     .user{
+                        display: flex;
                         img{
                             border-radius: 50%;
                             width: 1rem;
                         }
                         span{
                             font-size: .8rem;
+                            margin-left: .3rem;
                         }
                     }
                 }

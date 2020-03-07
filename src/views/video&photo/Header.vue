@@ -1,24 +1,27 @@
 <template>
      <div class='header'>
-        <div class='user'>
-            <img :src='item.user.avatar.small'/>
+        <div class='user' @click='handelUser(headerObj.userSlug)'>
+            <img :src='headerObj.userImg'/>
             <div>
-                <h3>{{ item.user.name }}</h3>
-                <p v-if='item.location'>
-                    <img src='https://i.52112.com/icon/jpg/256/20200113/71287/3038442.jpg'/>
-                    <span>{{ item.location.label }}</span>
+                <h3>{{ headerObj.userName }}</h3>
+                <p v-if='headerObj.location'>
+                    <i class='van-icon van-icon-location-o'></i>
+                    <span>{{ headerObj.location }}</span>
                 </p>
             </div>
         </div>
-        <div class='follow' :class='isFollow ? "gray":""' @click='handelFollow'>
-            {{ isFollow?'已关注':'+关注'}}
-        </div>
+        <van-button class='follow' @click='handelFollow' plain hairline :type='isFollow?"info":"default"'
+        size='small' :text='isFollow?"已关注":"+关注"'></van-button>
     </div>
 </template>
 
 <script>
+import Vue from 'vue'
+import { Button, Icon } from 'vant'
+Vue.use(Button).use(Icon)
+
 export default {
-  props: ['item'],
+  props: ['headerObj'],
   data () {
     return {
       isFollow: false
@@ -28,6 +31,9 @@ export default {
     // 是否关注
     handelFollow () {
       this.isFollow = !this.isFollow
+    },
+    handelUser (slug) {
+      this.$router.push(`/users/${slug}`)
     }
   }
 }
@@ -55,27 +61,24 @@ export default {
                 justify-content: center;
                 margin: 0 1rem;
                 h3{
-                    font-size: 1rem;
+                    font: 1rem/1.5rem '';
                 }
                 p{
                     color:gray;
-                    img{
-                        width: .7rem;
-                        height: .7rem;
-                        margin-bottom: .1.7rem;
+                    display: flex;
+                    i{
+                        align-self: center;
+                    }
+                    span{
+                        margin-left: .3rem;
+                        font-size: .75rem;
+                        align-self: center;
                     }
                 }
             }
         }
         .follow{
-            width: 2.6rem;
-            height: 2rem;
-            text-align: center;
             align-self: center;
-            background: rgb(236, 235, 235);
-            font: .8rem/2rem '';
-            padding: 0 .5rem;
-            color: blue;
         }
         .gray{
             color: gray;

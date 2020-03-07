@@ -3,12 +3,12 @@
     <div class="photographer">
       <ul class="photos" v-show="isShow">
         <router-link
-          :to="data.path"
+          :to="{path:data.path,query:{url:data.url}}"
           tag="li"
           activeClass="qiaowanze"
           v-for="(data,index) in navlist"
           :key="data.text"
-          @click.native="handleClick(index)"
+          @click.native="handleClick(index,data)"
         >{{data.text}}</router-link>
       </ul>
       <div class="left">
@@ -27,26 +27,32 @@
             <p>账号类型</p>
             <van-radio-group v-model="radio">
               <van-cell-group>
-                <van-cell title="个人&公司" clickable @click="radio = '1'">
+                <van-cell title="个人&公司" clickable @click="click1()">
                   <van-radio slot="right-icon" name="1" />
                 </van-cell>
-                <van-cell title="个人" clickable @click="radio = '2'">
+                <van-cell title="个人" clickable @click="click2()">
                   <van-radio slot="right-icon" name="2" />
                 </van-cell>
-                <van-cell title="公司" clickable @click="radio = '3'">
+                <van-cell title="公司" clickable @click="click3()">
                   <van-radio slot="right-icon" name="3" />
                 </van-cell>
               </van-cell-group>
             </van-radio-group>
           </div>
           <div class="Btn">
-            <button class="btn" @click="show=!show">重置</button>
-            <button class="btn" @click="show=!show">确定</button>
+            <button class="btn" @click="click()">重置</button>
+            <button class="btn" @click="click()">确定</button>
           </div>
         </van-popup>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view :datalist="datalist"></router-view>
+    <van-pagination
+      v-model="currentPage"
+      :page-count="pages"
+      mode="simple"
+      @change="handleChange()"
+    />
   </div>
 </template>
 <script>
@@ -61,46 +67,144 @@ import {
   Button
 } from 'vant'
 Vue.use(Pagination)
-Vue.use(Popup)
-Vue.use(Radio)
-Vue.use(RadioGroup)
-Vue.use(CellGroup)
-Vue.use(Cell)
-Vue.use(Button)
+  .use(Button)
+  .use(Popup)
+  .use(Radio)
+  .use(RadioGroup)
+  .use(CellGroup)
+  .use(Cell)
 export default {
   data () {
     return {
+      datalist: [],
+      currentPage: 1,
+      page: 0,
+      pages: 0,
       radio: '1',
       show: false,
       isShow: false,
+      type: '',
       navlist: [
         {
           path: '/photographers/recommended',
-          text: '推荐摄影师'
+          text: '推荐摄影师',
+          url: 'recommended'
         },
         {
           path: '/photographers/hot',
-          text: '热门摄影师'
+          text: '热门摄影师',
+          url: 'hot'
         },
         {
           path: '/photographers/new',
-          text: '新晋摄影师'
+          text: '新晋摄影师',
+          url: 'new'
         },
         {
           path: '/photographers/creator',
-          text: '签约摄影师'
+          text: '签约摄影师',
+          url: 'contract'
         }
       ],
       index: 0
     }
   },
+  mounted () {
+    if (!this.$route.query.url) {
+      var url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+    } else {
+      url = `/api/v2/photographers/${this.navlist[this.index].url}?user_type=${
+        this.type
+      }&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+    }
+    this.$axios({
+      url: url
+    }).then(res => {
+      this.datalist = res.data.data.items
+      this.datalist = this.datalist.map(item => {
+        return { ...item, text: '关注' }
+      })
+      this.pages = Math.round(res.data.data.total_items / 20)
+    })
+  },
   methods: {
     showPopup () {
       this.show = true
     },
-    handleClick (index) {
+    handleClick (index, data) {
       this.index = index
       this.isShow = false
+      var url = ''
+      if (!this.$route.query.url) {
+        url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      } else {
+        url = `/api/v2/photographers/${
+          this.navlist[this.index].url
+        }?user_type=${
+          this.type
+        }&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      }
+      this.$axios({
+        url: url
+      }).then(res => {
+        this.datalist = res.data.data.items
+        this.datalist = this.datalist.map(item => {
+          return { ...item, text: '关注' }
+        })
+        this.pages = Math.round(res.data.data.total_items / 20)
+      })
+      // console.log(this.url)
+    },
+    click1 () {
+      this.type = ''
+    },
+    click2 () {
+      this.type = 'personal'
+    },
+    click3 () {
+      this.type = 'company'
+    },
+    click () {
+      this.show = false
+      var url = 0
+      if (!this.$route.query.url) {
+        url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      } else {
+        url = `/api/v2/photographers/${
+          this.navlist[this.index].url
+        }?user_type=${
+          this.type
+        }&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      }
+      this.$axios({
+        url: url
+      }).then(res => {
+        this.datalist = res.data.data.items
+        this.datalist = this.datalist.map(item => {
+          return { ...item, text: '关注' }
+        })
+        this.pages = Math.round(res.data.data.total_items / 20)
+        this.type = ''
+      })
+    },
+    handleChange () {
+      this.datalist = []
+      this.page = (this.currentPage - 1) * 20
+      this.$nextTick(() => {
+        this.$axios({
+          url: `/api/v2/photographers/${
+            this.navlist[this.index].url
+          }?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${
+            this.page
+          }`
+        }).then(res => {
+          // console.log(res)
+          this.datalist = res.data.data.items
+          this.datalist = this.datalist.map(item => {
+            return { ...item, text: '关注' }
+          })
+        })
+      })
     }
   }
 }
@@ -112,17 +216,12 @@ export default {
   background-color: #fff;
   border-bottom: 1px solid #e8e8e8;
   height: 3rem;
-  // position: fixed;
-  // width: 100%;
-  // z-index: 1234;
-  // top: 2.9rem;
   .photos {
     width: 100%;
     position: absolute;
     background: #fff;
     z-index: 500;
     left: 0;
-    // top: 3rem;
     top: 6rem;
     li {
       margin: 0.5rem 0rem 1rem 1.5rem;

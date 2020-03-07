@@ -2,18 +2,18 @@
     <div class='introduce'>
         <div class='title'>
             <img src='//spcn-webfront.skypixel.com/skypixel/v2/public/assets/images/ordinary-s.25f33d98.svg'/>
-            <p>{{ item.title }}</p>
+            <p>{{ introduceObj.title }}</p>
         </div>
         <div class='browse'>
-            <p><span>{{ item.view_count }}</span><span>次浏览</span></p>
-            <p><span>使用</span><span class='equipment'>{{ item.equipment.name }}</span><span>拍摄</span></p>
+            <p><span>{{ introduceObj.view_count }}</span><span>次浏览</span></p>
+            <p><span>使用</span><span class='equipment'>{{ introduceObj.equipment }}</span><span>拍摄</span></p>
         </div>
         <div class='describe' :class='isOpen?"spread":""'>
-            <p class='description'>{{ item.description }}</p>
-            <p class='time'>{{ item.created_at | filterDate}}</p>
-            <div class='tag'>
-                <ul>
-                    <li v-for='data in item.tags' :key='data.name'>
+            <p class='description'>{{ introduceObj.description }}</p>
+            <p class='time'>{{ introduceObj.created_at | filterDate}}</p>
+            <div class='content'>
+                <ul class='tag'>
+                    <li v-for='data in introduceObj.tags' :key='data.name' @click='handelTag(data.slug)'>
                     {{ data.name }}
                     </li>
                 </ul>
@@ -34,13 +34,20 @@ Vue.filter('filterDate', (date) => {
 })
 
 export default {
-  props: ['item'],
+  props: ['introduceObj'],
   data () {
     return {
-      isOpen: false
+      isOpen: false,
+      wrapperWidth: ''
     }
   },
   methods: {
+    handelTag (slug) {
+      this.$router.push(`/tags/${slug}`)
+    }
+  },
+  mounted () {
+
   }
 }
 </script>
@@ -86,18 +93,19 @@ export default {
             font: .8rem/2 '';
             color: rgb(190, 190, 190);
         }
-        .tag{
+        .content{
+            overflow-y: hidden;
+            overflow-x: auto;
+            ul.tag{
             padding: .5rem 0;
-            overflow-x: scroll;
-            ul{
-                width: 50rem;
-                display: flex;
+            display: flex;
                 li{
                     font: .9rem/2 '';
                     padding: 0 .5rem;
                     margin: .1rem .5rem;
                     background:rgb(240, 238, 238);
                     color: gray;
+                    white-space: nowrap;
                 }
             }
         }

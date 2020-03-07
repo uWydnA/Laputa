@@ -1,6 +1,6 @@
 <template>
   <li v-if="cardata">
-    <div class="top" @click="setId(cardata.slug)" v-if='noTags'>
+    <div class="top" @click="$router.push(`/users/${cardata.user.slug}`)" v-if="noTags">
       <div class="left">
         <img :src="cardata.user.avatar.small" alt />
       </div>

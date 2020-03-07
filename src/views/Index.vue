@@ -39,7 +39,7 @@
             <span>热门标签</span>
           </div>
           <a class="right">
-            <span>查看全部</span>
+            <span @click='$router.push("/explore")'>查看全部</span>
           </a>
         </div>
         <swiperSmall
@@ -111,7 +111,7 @@ export default {
       url:
         '/api/v2/page-contents/skypixel_root_mobile_banner_top/banners?lang=zh-Hans&platform=web&device=mobile'
     }).then(res => {
-      this.swiperlist = res.data.data.items.map(val => val.cover)
+      this.swiperlist = res.data.data.items
     })
     this.$axios({
       url: '/api/v2/geo-tags/weight?lang=zh-Hans&platform=web&device=mobile'
