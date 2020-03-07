@@ -82,7 +82,7 @@ export default {
     onClickLeft () {
       this.listshow = !this.listshow
       this.lefticon = this.lefticon === 'clear' ? 'wap-nav' : 'clear'
-      this.noClick = false
+      this.noClick = !this.noClick
     },
     backHome () {
       if (!/^#\/$/.test(location.hash)) {
