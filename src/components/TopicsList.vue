@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import carbar from "@/components/CardBar";
+import carbar from '@/components/CardBar'
 export default {
   components: {
     carbar
   },
-  props: ["myData"]
-};
+  props: ['myData']
+}
 </script>
 
 <style lang="scss" scoped>

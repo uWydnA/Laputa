@@ -68,19 +68,6 @@ export default {
   components: {
     firstward
   },
-  filters: {
-    timeFilter (data) {
-      return (
-        (parseInt(data / 60) < 10
-          ? '0' + parseInt(data / 60)
-          : parseInt(data / 60)) +
-        ':' +
-        (parseInt(data % 60) < 10
-          ? '0' + parseInt(data % 60)
-          : parseInt(data % 60))
-      )
-    }
-  },
   mounted () {
     this.$axios({
       url: `/api/v2/contests/${this.$route.params.id}?lang=zh-Hans&platform=web&device=mobile`
@@ -101,7 +88,6 @@ export default {
       this.photolist = this.allist['skypixel-5th-anniversary-contest-annual-photo-award-sponsored-by-western-digital']
       console.log(this.photolist)
     })
-    this.scollMove()
   }
 }
 </script>

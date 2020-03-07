@@ -28,6 +28,19 @@
 import { mapMutations } from 'vuex'
 export default {
   props: ['list'],
+  filters: {
+    timeFilter (data) {
+      return (
+        (parseInt(data / 60) < 10
+          ? '0' + parseInt(data / 60)
+          : parseInt(data / 60)) +
+        ':' +
+        (parseInt(data % 60) < 10
+          ? '0' + parseInt(data % 60)
+          : parseInt(data % 60))
+      )
+    }
+  },
   methods: {
     ...mapMutations('video', ['setVideoId']),
     setId (data) {
