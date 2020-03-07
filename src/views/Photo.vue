@@ -55,10 +55,7 @@ export default {
           location: res.data.data.item.location ? res.data.data.item.location.label : ''
         }
 
-        this.shareObj = {
-          like_count: res.data.data.item.like_count,
-          comment_count: res.data.data.item.comment_count
-        }
+        this.shareObj = res.data.data.item
 
         this.introduceObj = {
           title: res.data.data.item.title,
