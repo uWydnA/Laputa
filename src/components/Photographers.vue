@@ -7,8 +7,8 @@
             <div class="imgbox">
               <img :src="data.avatar.small" />
             </div>
-            <i>{{data.name}}</i>
-            <p>{{data.country_name}}</p>
+            <i @click="handleClick2()">{{data.name}}</i>
+            <p @click="handleClick2()">{{data.country_name}}</p>
             <div class="_22r_" style="margin-left:3rem;">
               <span>{{data.credit_score}}</span>
               <span>声望</span>
@@ -33,7 +33,7 @@
               <img :src="data.image.small" />
               <div class="time" v-show="data.duration">{{data.duration | detaFilter}}</div>
               <div class="time" v-show="data.album_photo_count">
-                <van-icon name="orders-o" />
+                <span class="iconfont icon-xiangce"></span>
                 {{data.album_photo_count}}
               </div>
             </div>
@@ -64,7 +64,7 @@ export default {
     return {
       datalist: [],
       currentPage: 1,
-      page: '',
+      page: 0,
       pages: 0
     }
   },
@@ -109,6 +109,9 @@ export default {
       } else if (data.type === 'video') {
         this.$router.push(`/video/${data.slug}`)
       }
+    },
+    handleClick2 () {
+
     }
   },
   computed: {

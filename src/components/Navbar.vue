@@ -1,16 +1,23 @@
 <template>
   <div>
     <van-nav-bar left-arrow @click-left="onClickLeft" @click-right="onClickRight" class="nav">
-      <van-icon :name="lefticon" slot="left" color="white" />
-      <van-icon name="setting-o" slot="right" color="white" v-if='isLogined' @click='$router.push("/notifications/messages")' style='margin-right:1rem' />
-      <van-icon name="friends" slot="right" color="white" @click="checkLogin" />
+      <van-icon :name="lefticon" slot="left" color="white" /><van-icon
+      name="setting-o"
+      slot="right"
+      color="white"
+      v-if="isLogined"
+      v-show="noClick"
+      @click='$router.push("/notifications/messages")'
+      style="margin-right:1rem"
+      />
+      <van-icon name="friends" slot="right" color="white" @click="checkLogin" v-show="noClick" />
     </van-nav-bar>
     <div class="dang"></div>
     <img
       class="logo"
       src="//spcn-webfront.skypixel.com/skypixel/v2/public/assets/images/logo-cn.00c32c62.svg"
       alt="logo"
-      @click='backHome'
+      @click="backHome"
     />
     <transition name="fade">
       <van-list class="list" v-if="listshow">
@@ -51,12 +58,17 @@ export default {
         { url: '/', name: '首页' },
         { url: '/explore', name: '探索' },
         { url: '/photographers/recommended', name: '摄影师' },
-        { url: '/notifications/messages', name: '消息' }
+        { url: '/notifications/messages', name: '消息' },
+        { url: '/', name: '博客' },
+        { url: '/', name: '天空之城5周年航拍大赛' },
+        { url: '/', name: '签约摄影师招募' },
+        { url: '/', name: '常见问题' },
+        { url: '/', name: '语言' }
       ],
       listshow: false,
       lefticon: 'wap-nav',
-      isLogin: false
-
+      isLogin: false,
+      noClick: true
     }
   },
   computed: {
@@ -70,9 +82,10 @@ export default {
     onClickLeft () {
       this.listshow = !this.listshow
       this.lefticon = this.lefticon === 'clear' ? 'wap-nav' : 'clear'
+      this.noClick = !this.noClick
     },
     backHome () {
-      if (!(/^#\/$/.test(location.hash))) {
+      if (!/^#\/$/.test(location.hash)) {
         this.$router.push('/')
       }
     },
@@ -94,6 +107,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.van-cell:not(:last-child)::after {
+  color: #fff;
+  border-bottom: 0.05rem solid #333!important;
+  margin:0 1rem;
+}
 .nav {
   position: fixed;
   width: 100%;
@@ -120,14 +138,17 @@ export default {
   width: 100%;
   z-index: 1000;
   .van-cell {
+    height: 3.5rem;
+    line-height: 2rem;
     color: #fff;
     background: #121212;
+    font-size: 1rem;
   }
 }
 .fade-enter-active,
 .fade-leave-active {
   opacity: 1;
-  transition: all 0.5s;
+  transition: all 0.2s;
   transform: translateY(0px);
 }
 .fade-enter,
