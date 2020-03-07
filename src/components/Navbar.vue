@@ -79,10 +79,6 @@ export default {
       return !!this.token
     }
   },
-  beforeRouteLeave (to, from, next) {
-    this.noClick = true
-    next()
-  },
   methods: {
     onClickLeft () {
       this.listshow = !this.listshow
@@ -98,6 +94,7 @@ export default {
     handleClick (data) {
       this.listshow = false
       this.lefticon = this.lefticon === 'clear' ? 'wap-nav' : 'clear'
+      this.noClick = true
       this.$router.push(data)
     },
     checkLogin () {
