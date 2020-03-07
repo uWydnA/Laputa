@@ -41,6 +41,14 @@ const routes = [{
   component: () => import('@/views/Notifications')
 },
 {
+  path: '/contests/:id',
+  component: () => import('@/views/Contests')
+},
+{
+  path: '/editors/:id',
+  component: () => import('@/views/Editors')
+},
+{
   path: '/tags/:id',
   component: () => import('@/views/Tags')
 },

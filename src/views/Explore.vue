@@ -17,35 +17,35 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { Grid, GridItem, Image } from "vant";
-import biaoqian from "@/components/Biaoqian";
-Vue.use(Grid);
-Vue.use(GridItem);
-Vue.use(Image);
+import Vue from 'vue'
+import { Grid, GridItem, Image } from 'vant'
+import biaoqian from '@/components/Biaoqian'
+Vue.use(Grid)
+Vue.use(GridItem)
+Vue.use(Image)
 export default {
   methods: {
-    handleT(data) {
-      this.$router.push(`/topics/${data}`);
+    handleT (data) {
+      this.$router.push(`/topics/${data}`)
     }
   },
   components: {
     biaoqian
   },
-  data() {
+  data () {
     return {
       titleImg: []
-    };
+    }
   },
-  mounted() {
+  mounted () {
     this.$axios
-      .get("/api/v2/topics?lang=zh-Hans&platform=web&device=mobile&limit=10")
+      .get('/api/v2/topics?lang=zh-Hans&platform=web&device=mobile&limit=10')
       .then(res => {
         // console.log(res.data.data.items);
-        this.titleImg = res.data.data.items;
-      });
+        this.titleImg = res.data.data.items
+      })
   }
-};
+}
 </script>
 
   <style lang="scss" scoped>

@@ -22,39 +22,39 @@
 </template>
 
 <script>
-import Vue from "vue";
-import { Panel } from "vant";
-import axios from "axios";
-import swiper1 from "@/components/ExploreSwiper";
-Vue.use(Panel);
+import Vue from 'vue'
+import { Panel } from 'vant'
+import axios from 'axios'
+import swiper1 from '@/components/ExploreSwiper'
+Vue.use(Panel)
 export default {
   methods: {
-    tiaozhuan(evt, data) {
+    tiaozhuan (evt, data) {
       // console.log(evt.path[0].tagName, data);
-      if (evt.path[0].tagName == "SPAN") {
-        this.$router.push(`/tags/${data}`);
+      if (evt.path[0].tagName == 'SPAN') {
+        this.$router.push(`/tags/${data}`)
       }
     }
   },
   components: {
     swiper1
   },
-  data() {
+  data () {
     return {
       list: []
-    };
+    }
   },
-  mounted() {
+  mounted () {
     axios
       .get(
-        "/api/v2/tags?lang=zh-Hans&platform=web&device=mobile&limit=12&offset=0"
+        '/api/v2/tags?lang=zh-Hans&platform=web&device=mobile&limit=12&offset=0'
       )
       .then(res => {
         // console.log(res.data.data.items);
-        this.list = res.data.data.items;
-      });
+        this.list = res.data.data.items
+      })
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
