@@ -94,16 +94,20 @@ export default {
           url: 'contract'
         }
       ],
-      index:0
+      index: 0
     }
   },
   mounted () {
+    if (!this.$route.query.url) {
+      var url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+    } else {
+      url = `/api/v2/photographers/${this.$route.query.url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+    }
     this.$axios({
-      url: `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      url: url
     }).then(res => {
       this.datalist = res.data.data.items
       this.pages = Math.round((res.data.data.total_items) / 20)
-      console.log(this.datalist)
     })
   },
   methods: {
@@ -124,7 +128,7 @@ export default {
     handleClick (index, data) {
       this.index = index
       this.isShow = false
-      var url='';
+      var url = ''
       if (!this.$route.query.url) {
         url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
       } else {
@@ -160,23 +164,11 @@ export default {
       }).then(res => {
         this.datalist = res.data.data.items
         this.pages = Math.round((res.data.data.total_items) / 20)
-        this.type=''
+        this.type = ''
       })
     }
-  },
-  mounted () {
-    if (!this.$route.query.url) {
-      var url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-    } else {
-      url = `/api/v2/photographers/${this.$route.query.url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-    }
-    this.$axios({
-      url: url
-    }).then(res => {
-      this.datalist = res.data.data.items
-      this.pages = Math.round((res.data.data.total_items) / 20)
-    })
   }
+
 }
 </script>
 <style lang="scss" scoped>
