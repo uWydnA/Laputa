@@ -72,6 +72,9 @@ export default {
       this.carlist = res.data.data.items
     })
     this.scrollGet()
+  },
+  destroyed () {
+    window.onscroll = null
   }
 }
 </script>

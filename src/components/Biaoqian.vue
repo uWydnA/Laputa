@@ -92,6 +92,8 @@ export default {
   }
 }
 .sw {
-  margin-left: 0.8rem;
+  // box-sizing: border-box;
+  margin-left: 0.4rem;
+  // margin-right: 2rem;
 }
 </style>
