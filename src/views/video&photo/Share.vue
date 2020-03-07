@@ -24,29 +24,29 @@
 
 <script>
 export default {
-    props:['item'],
-    data () {
-        return {
-            ispraise: false,
-            isCollect: false,
-            praiseNum: 0
-        }
-    },
-    mounted () {
-        this.praiseNum = this.item.like_count ? parseInt(this.item.like_count) : 0
-    },
-    methods: {
-        // 点赞
-        handelPraise () {
-            this.ispraise = !this.ispraise
-            // 点赞数计算
-            this.ispraise ? this.praiseNum++ : this.praiseNum--
-        },
-        // 收藏
-        handelCollect () {
-            this.isCollect = !this.isCollect
-        }
+  props: ['item'],
+  data () {
+    return {
+      ispraise: false,
+      isCollect: false,
+      praiseNum: 0
     }
+  },
+  mounted () {
+    this.praiseNum = this.item.like_count ? parseInt(this.item.like_count) : 0
+  },
+  methods: {
+    // 点赞
+    handelPraise () {
+      this.ispraise = !this.ispraise
+      // 点赞数计算
+      this.ispraise ? this.praiseNum++ : this.praiseNum--
+    },
+    // 收藏
+    handelCollect () {
+      this.isCollect = !this.isCollect
+    }
+  }
 }
 </script>
 

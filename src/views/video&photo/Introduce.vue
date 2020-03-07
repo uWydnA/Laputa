@@ -34,14 +34,14 @@ Vue.filter('filterDate', (date) => {
 })
 
 export default {
-    props:['item'],
-    data () {
-        return {
-            isOpen: false
-        }
-    },
-    methods: {
+  props: ['item'],
+  data () {
+    return {
+      isOpen: false
     }
+  },
+  methods: {
+  }
 }
 </script>
 
@@ -98,7 +98,7 @@ export default {
                     margin: .1rem .5rem;
                     background:rgb(240, 238, 238);
                     color: gray;
-                }  
+                }
             }
         }
     }

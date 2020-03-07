@@ -18,18 +18,18 @@
 
 <script>
 export default {
-    props:['item'],
-    data () {
-        return {
-            isFollow: false,
-        }
-    },
-    methods:{
-        // 是否关注
-        handelFollow () {
-            this.isFollow = !this.isFollow
-        }
+  props: ['item'],
+  data () {
+    return {
+      isFollow: false
     }
+  },
+  methods: {
+    // 是否关注
+    handelFollow () {
+      this.isFollow = !this.isFollow
+    }
+  }
 }
 </script>
 

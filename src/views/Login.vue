@@ -35,7 +35,9 @@
     </div>
     <div class="otherLogin">
         <div class="otherway">其他登录方式</div>
-        <div>新浪微博</div>
+        <!-- <a href="https://api.weibo.com/oauth2/authorize?client_id=4116565080&response_type=code&redirect_uri=https://www.skypixel.com/api/website/oauth/sina/callback">
+          <div class="iconfont icon-icon-test72 sina"></div>
+        </a> -->
     </div>
   </div>
 </template>

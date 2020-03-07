@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import myvideo from '@/components/Video'
 import { mapState } from 'vuex'
 import myheader from './video&photo/Header'
 import share from './video&photo/Share'
@@ -32,13 +31,12 @@ export default {
   },
   components: {
     myheader,
-    myvideo,
     share,
     introduce,
     love
   },
   mounted () {
-    this.$axios.get(`/api/v2/photos/${ this.$route.params.id }?lang=zh-Hans&platform=web&device=mobile&compatible=true`)
+    this.$axios.get(`/api/v2/photos/${this.$route.params.id}?lang=zh-Hans&platform=web&device=mobile&compatible=true`)
       .then(res => {
         this.item = res.data.data.item
         this.imgUrl = res.data.data.item.image.small
@@ -64,5 +62,5 @@ export default {
           }
       }
    }
-    
+
 </style>

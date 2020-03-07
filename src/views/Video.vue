@@ -37,7 +37,7 @@ export default {
     love
   },
   mounted () {
-    this.$axios.get(`/api/v2/videos/${ this.$route.params.id }?lang=zh-Hans&platform=web&device=mobile`)
+    this.$axios.get(`/api/v2/videos/${this.$route.params.id}?lang=zh-Hans&platform=web&device=mobile`)
       .then(res => {
         this.videoUrl = res.data.data.item.cdn_url.medium
         this.posterUrl = res.data.data.item.image.medium
@@ -64,5 +64,5 @@ export default {
           }
       }
    }
-    
+
 </style>
