@@ -194,7 +194,6 @@ export default {
     ...mapState('login', ['token']),
     commentFilter () {
       const res = this.comment.filter(val => val.slug == this.cardata.slug)
-      console.log(res)
       if (res.length) {
         return res[0].count - 0 + this.cardata.comment_count - 0
       } else {
