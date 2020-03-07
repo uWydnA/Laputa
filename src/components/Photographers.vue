@@ -41,12 +41,16 @@
         </div>
       </div>
     </div>
-    <van-pagination v-model="currentPage" :page-count="pages" mode="simple" @change="handleChange()" />
+    <van-pagination
+      v-model="currentPage"
+      :page-count="pages"
+      mode="simple"
+      @change="handleChange()"
+    />
   </div>
 </template>
 <script>
 import Vue from 'vue'
-import { mapState } from 'vuex'
 import moment from 'moment'
 import { Pagination, Popup } from 'vant'
 Vue.use(Pagination).use(Popup)
@@ -67,23 +71,10 @@ export default {
     }
   },
   methods: {
-    handleChange () {
-      this.datalist = []
-      this.page = (this.currentPage - 1) * 20
-      this.$nextTick(() => {
-        this.$axios({
-          url: `/api/v2/photographers/${this.$route.query.url}?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-        }).then(res => {
-          // console.log(res)
-          this.datalist = res.data.data.items
-        })
-      })
-    },
     handleClick () {
       // 登录注册 完成后在完善部分功能
       console.log(this.token)
       if (this.token) {
-
       } else {
         this.$router.push('/Login')
       }
@@ -95,12 +86,7 @@ export default {
         this.$router.push(`/video/${data.slug}`)
       }
     },
-    handleClick2 () {
-
-    }
-  },
-  computed: {
-    ...mapState('login', ['token'])
+    handleClick2 () {}
   }
 }
 </script>

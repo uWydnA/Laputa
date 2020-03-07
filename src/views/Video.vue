@@ -43,18 +43,13 @@ export default {
     comment
   },
   mounted () {
-    this.wrapperHeight = {
-      height: (document.documentElement.clientHeight - 46 + 'px') ||
-      (document.body.clientHeight - 46 + 'px')
-    }
-
     this.$axios.get(`/api/v2/videos/${this.$route.params.id}?lang=zh-Hans&platform=web&device=mobile`)
       .then(res => {
         this.videoUrl = res.data.data.item.cdn_url.medium
         this.posterUrl = res.data.data.item.image.medium
-        this.item = res.data.data.item
 
         this.headerObj = {
+          userSlug: res.data.data.item.user.slug,
           userName: res.data.data.item.user.name,
           userImg: res.data.data.item.user.avatar.small,
           location: res.data.data.item.location ? res.data.data.item.location.label : ''
