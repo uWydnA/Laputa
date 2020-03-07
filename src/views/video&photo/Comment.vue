@@ -1,16 +1,16 @@
 <template>
     <div class='content'>
         <div class='commentArea'>
-            <van-popup class='popup' v-model="show" position="top">
+            <van-popup class='popup' v-model="show" round transition='rotate'>
                 <label>
-                    <textarea placeholder="点击输入你的评论..." v-model='text'></textarea>
+                    <textarea :class='remind?"":"red"' placeholder="点击输入你的评论..." v-model='text'></textarea>
                 </label>
                 <div class='button'>
-                    <div class='cancel' @click='show=false'>取消</div>
+                    <div class='cancel' @click='handelCancel'>取消</div>
                     <div class='sure' @click='handelComment'>评论</div>
                 </div>
             </van-popup>
-            <h3>2条评论</h3>
+            <h3>{{ dataList.count }}条评论</h3>
             <div class='commentInput'>
                 <img src='https://cdn-usa.skypixel.com/uploads/usa_files/default_images/default_avatar/99e9657e-0b4b-4547-9e9f-7f0bf6cc5cca.png@!64x64'/>
                 <van-cell @click="showPopup">
@@ -18,8 +18,8 @@
                 </van-cell>
             </div>
         </div>
-        <ul>
-            <li v-for='item in computedData' :key='item.id'>
+        <ul v-if='this.dataList.slug'>
+            <li v-for='item in dataList.items' :key='item.id'>
                 <div class='left'>
                     <img :src='item.user.avatar.small'/>
                 </div>
@@ -56,7 +56,9 @@ export default {
   data () {
     return {
       show: false,
-      text: ''
+      text: '',
+      dataList: {},
+      remind: true
     }
   },
   mounted () {
@@ -66,71 +68,76 @@ export default {
     this.$axios.get(`/api/v2/${path}/${this.$route.params.id}/comments?
     lang=zh-Hans&platform=web&device=mobile&limit=10&offset=0`)
       .then(res => {
-        this.setComment({
+        this.dataList = {
           slug: this.$route.params.id,
           count: this.count,
           items: [...res.data.data.items]
-        })
-        // console.log(this.comment)
+        }
+        var data = this.comment.filter(val => val.slug === this.$route.params.id)
+        if (data.length) {
+          this.dataList.count = this.dataList.count + data[0].count
+          this.dataList.items = [...this.dataList.items, ...data[0].items]
+        }
       })
+  },
+  watch: {
+    text (newText, oldText) {
+      if (!newText) {
+        this.remind = true
+      }
+    }
   },
   methods: {
     ...mapMutations('comment', ['setComment']),
     showPopup () {
-      this.show = true
+      if (this.token) {
+        this.show = true
+      } else {
+        this.$router.push('/login')
+      }
+    },
+    handelCancel () {
+      this.show = false
+      this.text = ''
     },
     handelComment () {
-      var d = new Date()
-      this.comment.forEach(val => {
-        if (val.slug === this.$route.params.id) {
-          val.items.push({
-            id: `${d}`,
-            user: {
-              slug: d,
-              name: '游客',
-              avatar: {
-                small: 'https://cdn-usa.skypixel.com/uploads/usa_files/default_images/default_avatar/99e9657e-0b4b-4547-9e9f-7f0bf6cc5cca.png@!64x64',
-                medium: 'https://cdn-usa.skypixel.com/uploads/usa_files/default_images/default_avatar/99e9657e-0b4b-4547-9e9f-7f0bf6cc5cca.png@!64x64',
-                large: 'https://cdn-usa.skypixel.com/uploads/usa_files/default_images/default_avatar/99e9657e-0b4b-4547-9e9f-7f0bf6cc5cca.png@!64x64'
-              }
-            },
-            content: this.text,
-            like_count: 0,
-            liked: false,
-            created_at: d
-          })
-        }
-      })
-      // console.log(this.comment)
-      this.show = false
+      if (this.text) {
+        var d = new Date()
+        var arr = [{
+          id: `${d}`,
+          user: {
+            slug: d,
+            name: this.userId.slice(1, 13),
+            avatar: {
+              small: 'https://cdn-usa.skypixel.com/uploads/usa_files/default_images/default_avatar/99e9657e-0b4b-4547-9e9f-7f0bf6cc5cca.png@!64x64',
+              medium: 'https://cdn-usa.skypixel.com/uploads/usa_files/default_images/default_avatar/99e9657e-0b4b-4547-9e9f-7f0bf6cc5cca.png@!64x64',
+              large: 'https://cdn-usa.skypixel.com/uploads/usa_files/default_images/default_avatar/99e9657e-0b4b-4547-9e9f-7f0bf6cc5cca.png@!64x64'
+            }
+          },
+          content: this.text,
+          like_count: 0,
+          liked: false,
+          created_at: d
+        }]
+        this.setComment({
+          slug: this.$route.params.id,
+          count: 1,
+          items: arr
+        })
+        this.dataList.count++
+        this.dataList.items.push(arr[0])
+
+        this.show = false
+        this.text = ''
+      } else {
+        this.text = '评论区不能为空哟'
+        this.remind = false
+      }
     }
   },
   computed: {
     ...mapState('comment', ['comment']),
-    computedData () {
-      var data = this.comment.filter(val => val.slug === this.$route.params.id)
-      if (data.length) {
-        console.log(data[0].items)
-        return data[0].items
-      } else {
-        return [{
-          id: '',
-          user: {
-            slug: '',
-            name: '',
-            avatar: {
-              small: '',
-              medium: '',
-              large: ''
-            }
-          },
-          content: '',
-          like_count: 0,
-          liked: false,
-          created_at: ''
-        }]
-      }
-    }
+    ...mapState('login', ['token', 'userId'])
   }
 }
 </script>
@@ -204,6 +211,7 @@ export default {
         }
     }
     .popup{
+        width: 20rem;
         label{
             display: block;
             padding: .75rem 1.25rem 1.875rem 1.25rem;
@@ -211,24 +219,33 @@ export default {
             textarea{
                 width: 100%;
                 height: 8.675rem;
-                font-size: .75rem;
+                font-size: .825rem;
                 border: none;
             }
         }
         .button{
             display: flex;
             text-align: center;
-            font: .875rem/3.125rem '';
+            font: 1rem/3.125rem '';
             .cancel{
                 flex: 1;
-                border: .1rem solid rgb(235, 234, 234);
+                border: .08rem solid rgb(235, 234, 234);
                 border-right: none;
             }
             .sure{
                 flex: 1;
-                border: .1rem solid rgb(235, 234, 234)
+                border: .08rem solid rgb(235, 234, 234);
+                color: #1989fa;
             }
         }
-
+    }
+    .rotate-enter-active, .rotate-leave-active{
+        transition: all .2s linear;
+    }
+    .rotate-enter,.rotate-leave-to{
+        transform: rotate(90deg);
+    }
+    .red{
+        color:red;
     }
 </style>

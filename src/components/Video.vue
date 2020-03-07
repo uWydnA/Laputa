@@ -25,7 +25,7 @@ export default {
       playerOptions: {
         playbackRates: [], // 播放速度
         autoplay: false, // 如果true,浏览器准备好时开始回放。
-        muted: true, // 刚开始是否消除任何音频。
+        muted: false, // 刚开始是否消除任何音频。
         loop: false, // 循环播放
         preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
         language: 'zh-CN',

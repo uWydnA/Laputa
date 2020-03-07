@@ -2,7 +2,7 @@
     <div class='share'>
         <div class='thumb'>
             <div class='left'>
-                <Praise v-if='shareObj.like_count' :cardata='shareObj'></Praise>
+                <Praise v-if='shareObj.like_count' :cardata='shareObj' :commentHeight='1100'></Praise>
             </div>
             <div class='right'>
                 <i @click='handelCollect' class='iconfont' :class='isCollect?"icon-icon_favorite":"icon-shoucang"'></i>

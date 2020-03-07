@@ -24,7 +24,17 @@ export default {
   },
   mutations: {
     setComment (state, data) {
-      state.comment.push(data)
+      let flag = 0
+      state.comment.forEach(val => {
+        if (val.slug === data.slug) {
+          val.items = [...val.items, ...data.items]
+          val.count = val.items.length
+          flag = 1
+        }
+      })
+      if (flag == 0) {
+        state.comment.push(data)
+      }
     }
   }
 }

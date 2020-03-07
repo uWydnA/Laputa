@@ -1,6 +1,6 @@
 <template>
      <div class='header'>
-        <div class='user' @click='handelUser()'>
+        <div class='user' @click='handelUser(headerObj.userSlug)'>
             <img :src='headerObj.userImg'/>
             <div>
                 <h3>{{ headerObj.userName }}</h3>
@@ -32,8 +32,8 @@ export default {
     handelFollow () {
       this.isFollow = !this.isFollow
     },
-    handelUser () {
-      console.log(1)
+    handelUser (slug) {
+      this.$router.push(`/users/${slug}`)
     }
   }
 }

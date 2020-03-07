@@ -3,7 +3,7 @@
         <div v-if='imgUrl'>
             <myheader :headerObj='headerObj'></myheader>
             <div class='imgbox'>
-              <img :src='imgUrl'/>
+                <img :src='imgUrl'/>
             </div>
             <share :shareObj='shareObj'></share>
             <introduce :introduceObj='introduceObj'></introduce>
@@ -49,6 +49,7 @@ export default {
         this.imgUrl = res.data.data.item.image.small
 
         this.headerObj = {
+          userSlug: res.data.data.item.user.slug,
           userName: res.data.data.item.user.name,
           userImg: res.data.data.item.user.avatar.small,
           location: res.data.data.item.location ? res.data.data.item.location.label : ''
@@ -80,6 +81,10 @@ export default {
 <style lang="scss" scoped>
     .imgbox{
       overflow: hidden;
+      img{
+            display:block;
+            width: 100%;
+      }
     }
    .banner{
       a{
@@ -88,7 +93,7 @@ export default {
             display:block;
             width: 100%;
             height: 100%;
-          }
+        }
       }
    }
 

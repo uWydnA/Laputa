@@ -11,9 +11,9 @@
         <div class='describe' :class='isOpen?"spread":""'>
             <p class='description'>{{ introduceObj.description }}</p>
             <p class='time'>{{ introduceObj.created_at | filterDate}}</p>
-            <div class='introduceWrapper' :style='wrapperWidth'>
+            <div class='content'>
                 <ul class='tag'>
-                    <li v-for='data in introduceObj.tags' :key='data.name'>
+                    <li v-for='data in introduceObj.tags' :key='data.name' @click='handelTag(data.slug)'>
                     {{ data.name }}
                     </li>
                 </ul>
@@ -28,7 +28,6 @@
 <script>
 import Vue from 'vue'
 import moment from 'moment'
-import BScroll from 'better-scroll'
 // 时间戳过滤
 Vue.filter('filterDate', (date) => {
   return moment(date).format('YYYY-MM-DD  h:mm')
@@ -43,18 +42,12 @@ export default {
     }
   },
   methods: {
+    handelTag (slug) {
+      this.$router.push(`/tags/${slug}`)
+    }
   },
   mounted () {
-    this.wrapperWidth = {
-      width: (document.documentElement.clientWidth + 'px') ||
-            (document.body.clientWidth + 'px')
-    }
-    new BScroll('.introduceWrapper', {
-      scrollbar: {
-        fade: true
-      },
-      scrollX: true
-    })
+
   }
 }
 </script>
@@ -100,17 +93,20 @@ export default {
             font: .8rem/2 '';
             color: rgb(190, 190, 190);
         }
-        ul.tag{
+        .content{
+            overflow-y: hidden;
+            overflow-x: auto;
+            ul.tag{
             padding: .5rem 0;
             display: flex;
-            width: 100rem;
-            li{
-                font: .9rem/2 '';
-                padding: 0 .5rem;
-                margin: .1rem .5rem;
-                background:rgb(240, 238, 238);
-                color: gray;
-                white-space: nowrap;
+                li{
+                    font: .9rem/2 '';
+                    padding: 0 .5rem;
+                    margin: .1rem .5rem;
+                    background:rgb(240, 238, 238);
+                    color: gray;
+                    white-space: nowrap;
+                }
             }
         }
     }
