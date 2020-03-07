@@ -3,7 +3,7 @@
     <div class="photographer">
       <ul class="photos" v-show="isShow">
         <router-link
-          :to="{path:data.path, query:{url:data.url}}"
+          :to="{path:data.path}"
           tag="li"
           activeClass="qiaowanze"
           v-for="(data,index) in navlist"
@@ -46,7 +46,7 @@
         </van-popup>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view v-bind:datas='datalist'></router-view>
   </div>
 </template>
 <script>
@@ -60,16 +60,14 @@ import {
   Cell,
   Button
 } from 'vant'
-Vue.use(Pagination)
-Vue.use(Popup)
-Vue.use(Radio)
-Vue.use(RadioGroup)
-Vue.use(CellGroup)
-Vue.use(Cell)
-Vue.use(Button)
+Vue.use(Pagination).use(Button).use(Popup).use(Radio).use(RadioGroup).use(CellGroup).use(Cell)
 export default {
   data () {
     return {
+      datalist: [],
+      currentPage: 1,
+      page: 0,
+      pages: 0,
       radio: '1',
       show: false,
       isShow: false,
@@ -99,26 +97,33 @@ export default {
       index: 0
     }
   },
+  mounted () {
+    this.$axios({
+      url: `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+    }).then(res => {
+      this.datalist = res.data.data.items
+      this.pages = Math.round((res.data.data.total_items) / 20)
+      console.log(this.datalist)
+    })
+  },
   methods: {
+    handleChange () {
+      this.datalist = []
+      this.page = (this.currentPage - 1) * 20
+      this.$nextTick(() => {
+        this.$axios({
+          url: `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+        }).then(res => {
+          this.datalist = res.data.data.items
+        })
+      })
+    },
     showPopup () {
       this.show = true
     },
     handleClick (index, data) {
       this.index = index
       this.isShow = false
-      // console.log(this.url)
-    },
-    click1 () {
-      this.type = 'all'
-    },
-    click2 () {
-      this.type = 'personal'
-    },
-    click3 () {
-      this.type = 'company'
-    },
-    click () {
-      this.show = false
     }
   }
 }
@@ -130,17 +135,12 @@ export default {
   background-color: #fff;
   border-bottom: 1px solid #e8e8e8;
   height: 3rem;
-  // position: fixed;
-  // width: 100%;
-  // z-index: 1234;
-  // top: 2.9rem;
   .photos {
     width: 100%;
     position: absolute;
     background: #fff;
     z-index: 500;
     left: 0;
-    // top: 3rem;
     top: 6rem;
     li {
       margin: 0.5rem 0rem 1rem 1.5rem;

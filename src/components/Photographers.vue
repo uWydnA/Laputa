@@ -2,7 +2,7 @@
   <div>
     <div class="photographers">
       <div class="_2e8y">
-        <div class="oJjm_3Ucp" v-for="data in datalist" :key="data.slug">
+        <div class="oJjm_3Ucp" v-for="data in datas" :key="data.slug">
           <div class="_1tZU">
             <div class="imgbox">
               <img :src="data.avatar.small" />
@@ -41,12 +41,16 @@
         </div>
       </div>
     </div>
-    <van-pagination v-model="currentPage" :page-count="pages" mode="simple" @change="handleChange()" />
+    <van-pagination
+      v-model="currentPage"
+      :page-count="pages"
+      mode="simple"
+      @change="handleChange()"
+    />
   </div>
 </template>
 <script>
 import Vue from 'vue'
-import { mapState } from 'vuex'
 import moment from 'moment'
 import { Pagination, Popup } from 'vant'
 Vue.use(Pagination).use(Popup)
@@ -59,46 +63,20 @@ Vue.filter('filter', data => {
   return (data / 1000).toFixed(1) + 'k'
 })
 export default {
-  props: ['url'],
+  props: ['datas'],
   data () {
     return {
-      datalist: [],
       currentPage: 1,
       page: 0,
       pages: 0
     }
   },
-  mounted () {
-    if (!this.$route.query.url) {
-      var url = `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-    } else {
-      url = `/api/v2/photographers/${this.$route.query.url}?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-    }
-    this.$axios({
-      url: url
-    }).then(res => {
-      this.datalist = res.data.data.items
-      this.pages = Math.round((res.data.data.total_items) / 20)
-    })
-  },
+  mounted () {},
   methods: {
-    handleChange () {
-      this.datalist = []
-      this.page = (this.currentPage - 1) * 20
-      this.$nextTick(() => {
-        this.$axios({
-          url: `/api/v2/photographers/${this.$route.query.url}?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-        }).then(res => {
-          // console.log(res)
-          this.datalist = res.data.data.items
-        })
-      })
-    },
     handleClick () {
       // 登录注册 完成后在完善部分功能
       console.log(this.token)
       if (this.token) {
-
       } else {
         this.$router.push('/Login')
       }
@@ -110,12 +88,7 @@ export default {
         this.$router.push(`/video/${data.slug}`)
       }
     },
-    handleClick2 () {
-
-    }
-  },
-  computed: {
-    ...mapState('login', ['token'])
+    handleClick2 () {}
   }
 }
 </script>
