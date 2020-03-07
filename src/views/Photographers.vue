@@ -46,7 +46,13 @@
         </van-popup>
       </div>
     </div>
-    <router-view :datalist='datalist' :pages='pages'></router-view>
+    <router-view :datalist="datalist"></router-view>
+    <van-pagination
+      v-model="currentPage"
+      :page-count="pages"
+      mode="simple"
+      @change="handleChange()"
+    />
   </div>
 </template>
 <script>
@@ -60,7 +66,13 @@ import {
   Cell,
   Button
 } from 'vant'
-Vue.use(Pagination).use(Button).use(Popup).use(Radio).use(RadioGroup).use(CellGroup).use(Cell)
+Vue.use(Pagination)
+  .use(Button)
+  .use(Popup)
+  .use(Radio)
+  .use(RadioGroup)
+  .use(CellGroup)
+  .use(Cell)
 export default {
   data () {
     return {
@@ -101,39 +113,45 @@ export default {
     if (!this.$route.query.url) {
       var url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
     } else {
-      url = `/api/v2/photographers/${this.$route.query.url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      url = `/api/v2/photographers/${this.navlist[this.index].url}?user_type=${
+        this.type
+      }&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
     }
     this.$axios({
       url: url
     }).then(res => {
       this.datalist = res.data.data.items
-      this.pages = Math.round((res.data.data.total_items) / 20)
+      this.datalist = this.datalist.map(item => {
+        return { ...item, text: '关注' }
+      })
+      this.pages = Math.round(res.data.data.total_items / 20)
     })
   },
   methods: {
-    handleChange () {
-      this.datalist = []
-      this.page = (this.currentPage - 1) * 20
-      this.$nextTick(() => {
-        this.$axios({
-          url: `/api/v2/photographers/recommended?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-        }).then(res => {
-          this.datalist = res.data.data.items
-        })
-      })
-    },
     showPopup () {
       this.show = true
     },
     handleClick (index, data) {
       this.index = index
       this.isShow = false
-      var url = `/api/v2/photographers/${this.navlist[index].url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      var url = ''
+      if (!this.$route.query.url) {
+        url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      } else {
+        url = `/api/v2/photographers/${
+          this.navlist[this.index].url
+        }?user_type=${
+          this.type
+        }&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+      }
       this.$axios({
         url: url
       }).then(res => {
         this.datalist = res.data.data.items
-        this.pages = Math.round((res.data.data.total_items) / 20)
+        this.datalist = this.datalist.map(item => {
+          return { ...item, text: '关注' }
+        })
+        this.pages = Math.round(res.data.data.total_items / 20)
       })
       // console.log(this.url)
     },
@@ -152,18 +170,43 @@ export default {
       if (!this.$route.query.url) {
         url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
       } else {
-        url = `/api/v2/photographers/${this.$route.query.url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
+        url = `/api/v2/photographers/${
+          this.navlist[this.index].url
+        }?user_type=${
+          this.type
+        }&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
       }
       this.$axios({
         url: url
       }).then(res => {
         this.datalist = res.data.data.items
-        this.pages = Math.round((res.data.data.total_items) / 20)
+        this.datalist = this.datalist.map(item => {
+          return { ...item, text: '关注' }
+        })
+        this.pages = Math.round(res.data.data.total_items / 20)
         this.type = ''
+      })
+    },
+    handleChange () {
+      this.datalist = []
+      this.page = (this.currentPage - 1) * 20
+      this.$nextTick(() => {
+        this.$axios({
+          url: `/api/v2/photographers/${
+            this.navlist[this.index].url
+          }?user_type=&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${
+            this.page
+          }`
+        }).then(res => {
+          // console.log(res)
+          this.datalist = res.data.data.items
+          this.datalist = this.datalist.map(item => {
+            return { ...item, text: '关注' }
+          })
+        })
       })
     }
   }
-
 }
 </script>
 <style lang="scss" scoped>
