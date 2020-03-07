@@ -128,12 +128,7 @@ export default {
     handleClick (index, data) {
       this.index = index
       this.isShow = false
-      var url = ''
-      if (!this.$route.query.url) {
-        url = `/api/v2/photographers/recommended?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-      } else {
-        url = `/api/v2/photographers/${this.$route.query.url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
-      }
+      var url = `/api/v2/photographers/${this.navlist[index].url}?user_type=${this.type}&lang=zh-Hans&platform=web&device=mobile&limit=20&offset=${this.page}`
       this.$axios({
         url: url
       }).then(res => {

@@ -77,7 +77,10 @@ export default {
       return !!this.token
     }
   },
-
+  beforeRouteLeave (to, from, next) {
+    this.noClick = true
+    next()
+  },
   methods: {
     onClickLeft () {
       this.listshow = !this.listshow
