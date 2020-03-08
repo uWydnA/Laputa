@@ -95,7 +95,7 @@
                   <img :src="data.image.small"  @click="handleView(data)" />
                   <div class="Ltitle" @click="handleView(data)">{{data.title}}</div>
                   <div class="someT">
-                    <span class="iconfont icon-dianzan3 like" @click="handlrF">{{data.like_count}}</span>
+                    <span class="iconfont icon-dianzan3 like">{{data.like_count}}</span>
                     <span class="iconfont icon-icon-test2 guanzhu">{{data.comment_count}}</span>
                     <span class="iconfont icon-share share">分享</span>
                     <div :class="data.duration?'duration':''">{{data.duration | duration}}</div>
@@ -136,16 +136,31 @@ export default {
     })
     next()
   },
+  // 离开该页面时，取消滚动条绑定事件
+  beforeRouteLeave (to, from, next) {
+    window.removeEventListener('scroll', this.onScroll)
+    next()
+  },
   data () {
     return {
+      // 背景图数据列表
       coveList: [],
+      // 头像数据列表
       avatarList: [],
+      // 个人信息列表
       userList: [],
+      // 作品列表
       viewList: [],
+      // 奖章列表
       badgesList: [],
+      // 头部请求接口链接
       urlNow: '',
+      // 作品列表请求接口链接
       urlList: '',
+      // 个人中心与他人主页判断显示
       isOtherShow: true,
+      // 作品总数
+      workSum: '',
       isShowA: {
         active: true
       },
@@ -158,9 +173,11 @@ export default {
       isShowD: {
         activeB: false
       },
+      // 懒加载请求数据时的初始值
       status: 1,
-      num: '',
-      before: ''
+      // parseInt(res.data.data.item.work_count/18)
+      // 作品总数/limt18.取整  (limt18,每次加载数据的步长)
+      num: ''
     }
   },
   methods: {
@@ -198,7 +215,7 @@ export default {
       if (this.viewList) {
         if (this.getScrollHeight() - this.getClientHeight() - this.getScrollTop() <= 150) {
           if (this.status <= this.num) {
-            // 调用请求函数
+            // 调用请求函数，懒加载数据并渲染，提升用户感知
             this.$axios({
               url: `/api/v2/users/${this.$route.params.id}/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=${this.status * 18}`,
               method: 'get'
@@ -207,14 +224,21 @@ export default {
             })
             this.status++
           } else {
-            console.log('没有更多内容了！！！')
+            if (parseInt(this.workSum % 18 === 0)) {
+              console.log('刚好是18的整数')
+            } else {
+              this.$axios({
+                url: `/api/v2/users/${this.$route.params.id}/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=${this.workSum}`,
+                method: 'get'
+              }).then(res => {
+                this.viewList = [...this.viewList, ...res.data.data.items]
+              })
+            }
           }
         }
       }
     },
-    handlrF () {
-      console.log('点赞')
-    },
+    // 个人主页退出按钮弹出框设置，是否退出
     setTing () {
       Dialog.confirm({
         message: '是否退出账号'
@@ -241,6 +265,7 @@ export default {
       this.isShowC.activeB = false
       this.isShowD.activeB = true
     },
+    // 根据点击的photo或者video，跳转各种详情页
     handleView (data) {
       if (data.type === 'photo') {
         this.$router.push(`/photos/${data.slug}`)
@@ -255,16 +280,21 @@ export default {
     }
   },
   destroyed () {
+    // 离开页面时取消监听浏览器返回按钮事件
     window.removeEventListener('popstate', this.goBack, false)
   },
   mounted () {
+    // 监听浏览器返回按钮触发
     if (window.history && window.history.pushState) {
       history.pushState(null, null, document.URL)
       window.addEventListener('popstate', this.goBack, false)
     }
+    // 监听滚动条事件，根据滚动条距底部距离
     this.$nextTick(function () {
       window.addEventListener('scroll', this.onScroll)
     })
+
+    // 正则判断，进入的页面是登录者还是他人主页，赋值不同的请求接口
     var reg = /^(user_)[a-z0-9_-]+$/
     if (reg.test(this.$route.params.id)) {
       this.urlNow = 'api/v2/users/djiuser-7lj0topsnozr?lang=zh-Hans&platform=web&device=mobile'
@@ -272,49 +302,38 @@ export default {
       this.isOtherShow = false
     } else {
       this.urlNow = `/api/v2/users/${this.$route.params.id}?lang=zh-Hans&platform=web&device=mobile`
-      this.urlList = `/api/v2/users/${this.$route.params.id}/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=`
+      this.urlList = `/api/v2/users/${this.$route.params.id}/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=0`
       this.isOtherShow = true
     }
 
+    // 头部数据请求渲染页面
     this.$axios({
       url: this.urlNow,
       method: 'get'
     }).then(res => {
       this.userList = res.data.data.item
-      // console.log(res.data.data.item)
       this.coveList = res.data.data.item.cover
       this.avatarList = res.data.data.item.avatar
-      this.num = parseInt(res.data.data.item.work_count)
+      this.workSum = res.data.data.item.work_count
+      this.num = parseInt(this.workSum / 18)
       var arr = res.data.data.item.badges
       this.badgesList = arr.reverse()
     })
 
-    // 异步请求，需要改成同步
+    // 进入页面初始请求数据渲染页面
     this.$axios({
-      url: this.urlList + '0',
+      url: this.urlList,
       method: 'get'
     }).then(res => {
       this.viewList = res.data.data.items
-      // console.log(res.data.data.items)
-    //   this.$axios({
-    //     url:this.urlList + '18',
-    //     method:'get'
-    //     }).then(res=>{
-    //       this.viewList2 = res.data.data.items
-    //       this.$axios({
-    //       url:this.urlList + '60',
-    //       method:'get'
-    //       }).then(res=>{
-    //         var arr = res.data.data.items
-    //         this.viewList = [...this.viewList1,...this.viewList2,...arr]
-    //       })
-    //   })
     })
   },
   filters: {
+    // usrId长度截取
     filter (data) {
       return data.slice(0, 13)
     },
+    // 播放时间秒转换成分+秒
     duration (s) {
       if (s) {
         var h
