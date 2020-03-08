@@ -121,19 +121,53 @@ import { Dialog, Lazyload } from 'vant'
 import { mapMutations } from 'vuex'
 Vue.use(Dialog).use(Lazyload, { lazyComponent: true })
 export default {
+  // 路由的钩子函数，beforeRouteUpdate可获取实例的this，beforeRouteEnter不能获取实例的this
+  // 当页面在/user/A和/user/B之间切换时，beforeRouteUpdate可实时获取路由信息，利用正则进行判断
+  // 点击到/user/A时，请求接口A的数据，并渲染页面，当回退到/user/B时，请求接口B的数据，并渲染页面
+  // 实现同一组件，渲染不同内容，不用进行页面的刷新。提升用户体验。
+  // 这一切实现的前提，必须是在/user的二级路由下。局部路由拦截
   beforeRouteUpdate (to, from, next) {
-    this.$axios({
-      url: 'api/v2/users/djiuser-7lj0topsnozr?lang=zh-Hans&platform=web&device=mobile',
-      method: 'get'
-    }).then(res => {
-      this.userList = res.data.data.item
-      this.coveList = res.data.data.item.cover
-      this.avatarList = res.data.data.item.avatar
-      this.num = parseInt(res.data.data.item.work_count)
-      var arr = res.data.data.item.badges
-      this.badgesList = arr.reverse()
+    // console.log(to.params.id)
+    var reg = /^(user_)[a-z0-9_-]+$/
+    if (reg.test(to.params.id)) {
+      this.urlNow = 'api/v2/users/djiuser-7lj0topsnozr?lang=zh-Hans&platform=web&device=mobile'
+      this.urlList = '/api/v2/users/djiuser-7lj0topsnozr/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=0'
       this.isOtherShow = false
-    })
+      this.$axios({
+        url: this.urlNow,
+        method: 'get'
+      }).then(res => {
+        this.userList = res.data.data.item
+        this.coveList = res.data.data.item.cover
+        this.avatarList = res.data.data.item.avatar
+        this.num = parseInt(res.data.data.item.work_count)
+        var arr = res.data.data.item.badges
+        this.badgesList = arr.reverse()
+      })
+    } else {
+      this.urlNow = `/api/v2/users/${to.params.id}?lang=zh-Hans&platform=web&device=mobile`
+      this.urlList = `/api/v2/users/${to.params.id}/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=0`
+      this.isOtherShow = true
+      // console.log(222)
+      this.$axios({
+        url: `/api/v2/users/${to.params.id}?lang=zh-Hans&platform=web&device=mobile`,
+        method: 'get'
+      }).then(res => {
+        this.userList = res.data.data.item
+        this.coveList = res.data.data.item.cover
+        this.avatarList = res.data.data.item.avatar
+        this.num = parseInt(res.data.data.item.work_count)
+        var arr = res.data.data.item.badges
+        this.badgesList = arr.reverse()
+      })
+
+      this.$axios({
+        url: `/api/v2/users/${to.params.id}/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=0`,
+        method: 'get'
+      }).then(res => {
+        this.viewList = res.data.data.items
+      })
+    }
     next()
   },
   // 离开该页面时，取消滚动条绑定事件
@@ -272,28 +306,15 @@ export default {
       } else {
         this.$router.push(`/video/${data.slug}`)
       }
-    },
-    goBack () {
-      // this.$router.replace({path:'/'});
-      this.$router.go(0)
-      // replace替换原路由，作用是避免回退死循环
     }
-  },
-  destroyed () {
-    // 离开页面时取消监听浏览器返回按钮事件
-    window.removeEventListener('popstate', this.goBack, false)
   },
   mounted () {
-    // 监听浏览器返回按钮触发
-    if (window.history && window.history.pushState) {
-      history.pushState(null, null, document.URL)
-      window.addEventListener('popstate', this.goBack, false)
-    }
     // 监听滚动条事件，根据滚动条距底部距离
     this.$nextTick(function () {
       window.addEventListener('scroll', this.onScroll)
     })
 
+    // 初次从其他路由进入/user/A或B页面时。利用获取到的this.$route.params.id进行判断，
     // 正则判断，进入的页面是登录者还是他人主页，赋值不同的请求接口
     var reg = /^(user_)[a-z0-9_-]+$/
     if (reg.test(this.$route.params.id)) {
