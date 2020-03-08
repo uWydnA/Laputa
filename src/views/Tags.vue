@@ -52,7 +52,6 @@ export default {
       }
     },
     handleClick (data) {
-      console.log(data)
       this.$axios({
         url: `/api/v2/tags//${this.$route.params.id}/${data}?lang=zh-Hans&platform=web&device=mobile&sort=hot&limit=15&offset=0`
       }).then(res => {
