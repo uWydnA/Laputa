@@ -1,5 +1,4 @@
 <template>
-<keep-alive>
   <div>
     <!-- {{$route.params.id}} -->
     <div class="banner" :style="{backgroundImage:'url('+(this.coveList.small?this.coveList.small:this.coveList.medium)+')'}">
@@ -11,7 +10,7 @@
       </div>
       <!-- <div class="name">{{$route.params.id | filter }}</div> -->
       <div class="introduce">
-        <div class="name">{{$route.params.id |filter}}</div>
+        <div class="name">{{userList.name |filter($route.params.id,this.userId)}}</div>
         <div class="prize" v-show='isOtherShow'>
           <div class="nation" :title="userList.country_name">
             <svg t="1583494194966" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5086" width="20" height="20"><path d="M51.2 218.763636H977.454545v586.472728H51.2V218.763636z" fill="#FD0013" p-id="5087"></path><path d="M195.490909 302.545455l27.927273 55.854545 60.509091 13.963636-46.545455 41.890909 9.309091 60.509091-51.2-27.927272-55.854545 27.927272 9.309091-60.509091-46.545455-41.890909 60.509091-9.309091 32.581818-60.50909z m228.072727 130.327272l9.309091 13.963637 18.618182 4.654545-18.618182 13.963636 4.654546 18.618182-13.963637-9.309091-13.963636 9.309091V465.454545l-13.963636-13.963636 18.618181-4.654545 9.309091-13.963637zM363.054545 283.927273v18.618182l13.963637 9.30909-13.963637 4.654546-4.654545 18.618182-13.963636-13.963637-13.963637 4.654546 9.309091-13.963637-9.309091-18.618181 18.618182 4.654545 13.963636-13.963636z m79.127273 69.818182l-9.309091 18.618181 4.654546 13.963637-13.963637-4.654546-13.963636 13.963637v-18.618182l-18.618182-9.309091 18.618182-4.654546 4.654545-18.618181 9.309091 13.963636 18.618182-4.654545z m-60.509091 172.218181l-18.618182 9.309091-4.654545 18.618182-13.963636-13.963636H325.818182l9.309091-13.963637-4.654546-13.963636 18.618182 4.654545 13.963636-13.963636v18.618182l18.618182 4.654545z" fill="#FFFD43" p-id="5088"></path></svg>
@@ -81,7 +80,6 @@
               <ul>
                 <li v-for="(data,index) in viewList" :key="index" >
                   <img :src="data.image.small" @click="handleView(data)" />
-                  <!-- <img v-for="(img,index) in imageList" v-lazy="img" :key='index' > -->
                   <div :class="data.duration?'duration':''">{{data.duration | duration}}</div>
                   <div :v-show="data.badges" class="badges">
                     <img v-for="(item,index) in data.badges" :key='index' :src='item.image_name | xunzhang' />
@@ -94,12 +92,8 @@
                 <li v-for="(data,index) in viewList" :key="index">
                   <img :src="data.image.small"  @click="handleView(data)" />
                   <div class="Ltitle" @click="handleView(data)">{{data.title}}</div>
-                  <div class="someT">
-                    <span class="iconfont icon-dianzan3 like">{{data.like_count}}</span>
-                    <span class="iconfont icon-icon-test2 guanzhu">{{data.comment_count}}</span>
-                    <span class="iconfont icon-share share">分享</span>
-                    <div :class="data.duration?'duration':''">{{data.duration | duration}}</div>
-                  </div>
+                  <!-- 点赞组件，传入data数据 -->
+                  <dianzan :cardata='data'></dianzan>
                   <div :v-show="data.badges" class="badges">
                     <img v-for="(item,index) in data.badges" :key='index' :src='item.image_name | xunzhang' />
                   </div>
@@ -113,27 +107,65 @@
         </div>
     </div>
   </div>
-</keep-alive>
 </template>
 <script>
 import Vue from 'vue'
-import { Dialog, Lazyload } from 'vant'
-import { mapMutations } from 'vuex'
-Vue.use(Dialog).use(Lazyload, { lazyComponent: true })
+import { Dialog, Overlay } from 'vant'
+import { mapMutations, mapState } from 'vuex'
+import dianzan from '../components/Dianzan'
+Vue.use(Dialog).use(Overlay)
 export default {
+  // 点赞、留言、分享组件注册
+  components: {
+    dianzan
+  },
+  // 路由的钩子函数，beforeRouteUpdate可获取实例的this，beforeRouteEnter不能获取实例的this
+  // 当页面在/user/A和/user/B之间切换时，beforeRouteUpdate可实时获取路由信息，利用正则进行判断
+  // 点击到/user/A时，请求接口A的数据，并渲染页面，当回退到/user/B时，请求接口B的数据，并渲染页面
+  // 实现同一组件，渲染不同内容，不用进行页面的刷新。提升用户体验。
+  // 这一切实现的前提，必须是在/user的二级路由下。局部路由拦截
   beforeRouteUpdate (to, from, next) {
-    this.$axios({
-      url: 'api/v2/users/djiuser-7lj0topsnozr?lang=zh-Hans&platform=web&device=mobile',
-      method: 'get'
-    }).then(res => {
-      this.userList = res.data.data.item
-      this.coveList = res.data.data.item.cover
-      this.avatarList = res.data.data.item.avatar
-      this.num = parseInt(res.data.data.item.work_count)
-      var arr = res.data.data.item.badges
-      this.badgesList = arr.reverse()
+    // console.log(to.params.id)
+    var reg = /^(user_)[a-z0-9_-]+$/
+    if (reg.test(to.params.id)) {
+      this.urlNow = 'api/v2/users/djiuser-7lj0topsnozr?lang=zh-Hans&platform=web&device=mobile'
+      this.urlList = '/api/v2/users/djiuser-7lj0topsnozr/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=0'
       this.isOtherShow = false
-    })
+      this.$axios({
+        url: this.urlNow,
+        method: 'get'
+      }).then(res => {
+        this.userList = res.data.data.item
+        this.coveList = res.data.data.item.cover
+        this.avatarList = res.data.data.item.avatar
+        this.num = parseInt(res.data.data.item.work_count)
+        var arr = res.data.data.item.badges
+        this.badgesList = arr.reverse()
+      })
+    } else {
+      this.urlNow = `/api/v2/users/${to.params.id}?lang=zh-Hans&platform=web&device=mobile`
+      this.urlList = `/api/v2/users/${to.params.id}/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=0`
+      this.isOtherShow = true
+      // console.log(222)
+      this.$axios({
+        url: `/api/v2/users/${to.params.id}?lang=zh-Hans&platform=web&device=mobile`,
+        method: 'get'
+      }).then(res => {
+        this.userList = res.data.data.item
+        this.coveList = res.data.data.item.cover
+        this.avatarList = res.data.data.item.avatar
+        this.num = parseInt(res.data.data.item.work_count)
+        var arr = res.data.data.item.badges
+        this.badgesList = arr.reverse()
+      })
+
+      this.$axios({
+        url: `/api/v2/users/${to.params.id}/works?lang=zh-Hans&platform=web&device=mobile&limit=18&offset=0`,
+        method: 'get'
+      }).then(res => {
+        this.viewList = res.data.data.items
+      })
+    }
     next()
   },
   // 离开该页面时，取消滚动条绑定事件
@@ -143,6 +175,7 @@ export default {
   },
   data () {
     return {
+      show: false,
       // 背景图数据列表
       coveList: [],
       // 头像数据列表
@@ -272,28 +305,15 @@ export default {
       } else {
         this.$router.push(`/video/${data.slug}`)
       }
-    },
-    goBack () {
-      // this.$router.replace({path:'/'});
-      this.$router.go(0)
-      // replace替换原路由，作用是避免回退死循环
     }
-  },
-  destroyed () {
-    // 离开页面时取消监听浏览器返回按钮事件
-    window.removeEventListener('popstate', this.goBack, false)
   },
   mounted () {
-    // 监听浏览器返回按钮触发
-    if (window.history && window.history.pushState) {
-      history.pushState(null, null, document.URL)
-      window.addEventListener('popstate', this.goBack, false)
-    }
     // 监听滚动条事件，根据滚动条距底部距离
     this.$nextTick(function () {
       window.addEventListener('scroll', this.onScroll)
     })
 
+    // 初次从其他路由进入/user/A或B页面时。利用获取到的this.$route.params.id进行判断，
     // 正则判断，进入的页面是登录者还是他人主页，赋值不同的请求接口
     var reg = /^(user_)[a-z0-9_-]+$/
     if (reg.test(this.$route.params.id)) {
@@ -328,10 +348,18 @@ export default {
       this.viewList = res.data.data.items
     })
   },
+  computed: {
+    ...mapState('login', ['userId'])
+  },
   filters: {
     // usrId长度截取
-    filter (data) {
-      return data.slice(0, 13)
+    filter (data, data1, userId) {
+      var reg = /^(user_)[a-z0-9_-]+$/
+      if (reg.test(data1)) {
+        return userId.slice(0, 13)
+      } else {
+        return data
+      }
     },
     // 播放时间秒转换成分+秒
     duration (s) {
@@ -544,7 +572,7 @@ export default {
     .all{
       position: absolute;
       font-size: 1rem;
-      font-weight: 700;
+      // font-weight: 700;
       box-sizing: border-box;
       color: #4b4b4b;
       text-align: center;
@@ -597,11 +625,9 @@ export default {
           }
         }
       }
-    }
-    .liebiao{
+          .liebiao{
       ul{
         li{
-          position: relative;
           img{
             display: block;
             width: 100%;
@@ -656,8 +682,68 @@ export default {
               }
             }
         }
+
+      }
+      .overlay{
+        .fx{
+          width: 95%;
+          position: fixed;
+          left:2.5%;
+          bottom: 1rem;
+          .fxo{
+            box-sizing: border-box;
+            padding: 1.2rem 2rem 1.5rem;
+            width: 100%;
+            background: white;
+            border-radius: 0.4rem;
+            // margin-left: 1rem;
+            margin-bottom: 0.5rem;
+            .fxoo{
+              width: 100%;
+              // height: 2rem;
+              margin-bottom: 1.2rem;
+            }
+            ul.fxul{
+              display: flex;
+              justify-content: space-between;
+              flex-wrap: wrap;
+              li{
+                width: 33%;
+                margin-bottom: 1.5rem;
+                .font{
+                  color: #838385;
+                  font-size: 0.6rem;
+                }
+              }
+            }
+          }
+          .quxiao{
+            width: 100%;
+            height: 3rem;
+            background:white;
+            border: 0;
+            // margin-left: 1rem;
+            color:#b5b5b5;
+            border-radius: 0.4rem;
+          }
+        }
+      }
+      .Cancel{
+        box-sizing: border-box;
+        padding: 0 1rem;
+        position: fixed;
+        left: 1.5rem;
+        bottom: 1rem;
+        border-radius:0.5rem;
+        border: 0;
+        width: 90%;
+        height: 3rem;
+        background: white;
+        color: #b5b5b5
       }
     }
+    }
+
     .Sc{
       position: absolute;
       font-size: 1rem;
