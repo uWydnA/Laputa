@@ -102,11 +102,6 @@ export default {
     }
   },
   mounted () {
-    Toast.loading({
-      message: '加载中...',
-      forbidClick: true,
-      overlay: true
-    })
     this.$axios({
       url:
         '/api/v2/page-contents/skypixel_root_mobile_banner_top/banners?lang=zh-Hans&platform=web&device=mobile'
@@ -129,7 +124,6 @@ export default {
       setTimeout(() => {
         this.ulHeight = document.querySelector('.infoUl').clientHeight - 1200
       }, 0)
-      Toast.clear()
     })
     this.$axios({
       url:
