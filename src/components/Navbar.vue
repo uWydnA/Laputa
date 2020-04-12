@@ -61,11 +61,11 @@ export default {
         { url: '/explore', name: '探索' },
         { url: '/photographers/recommended', name: '摄影师' },
         { url: '/notifications/messages', name: '消息' },
-        { url: '/', name: '博客' },
-        { url: '/', name: '天空之城5周年航拍大赛' },
-        { url: '/', name: '签约摄影师招募' },
-        { url: '/', name: '常见问题' },
-        { url: '/', name: '语言' }
+        { url: '/contests/2019?contest=2019', name: '博客' },
+        { url: '/contests/2019?contest=2019', name: '天空之城5周年航拍大赛' },
+        { url: '/photographers/recommended', name: '签约摄影师招募' },
+        { url: '/explore', name: '常见问题' },
+        { url: '/explore', name: '语言' }
       ],
       listshow: false,
       lefticon: 'wap-nav',
